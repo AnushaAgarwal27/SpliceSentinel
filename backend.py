@@ -1,17 +1,19 @@
 import httpx
 import sqlite3
 import json
+import os
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from anthropic import Anthropic
-import phoenix as px
-from openinference.instrumentation.anthropic import AnthropicInstrumentor
+import google.generativeai as genai
+from dotenv import load_dotenv
 
-# Initialize Arize Phoenix tracing
-px.launch_app()
-AnthropicInstrumentor().instrument()
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable not set")
+genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI()
 
@@ -165,9 +167,7 @@ def get_narrative_reports(drug_a: str, drug_b: str) -> list:
         return []
 
 def generate_narrative_summary(drug_a: str, drug_b: str, narratives: list) -> str:
-    """Use Claude to read narratives and summarize pattern"""
-    client = Anthropic()
-
+    """Use Gemini to read narratives and summarize pattern"""
     narrative_text = "\n\n".join([
         f"Report {i+1} ({n['date']}):\n{n['text']}"
         for i, n in enumerate(narratives)
@@ -181,17 +181,12 @@ Summarize in 2-3 sentences: what symptom or pattern emerges? How severe? How soo
 
 Keep it plain language, suitable for a doctor to read."""
 
-    message = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=300,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(prompt)
+    return response.text
 
 def generate_clinical_note(drug_a: str, drug_b: str, risk_level: str, summary: str, report_count: int, patient_age: int = None, patient_conditions: str = None) -> str:
     """Generate a clinical note for the doctor"""
-    client = Anthropic()
-
     patient_context = ""
     if patient_age and patient_conditions:
         patient_context = f"\nPatient profile: {patient_age}yo, {patient_conditions}."
@@ -205,17 +200,12 @@ Pattern from patient reports: {summary}{patient_context}
 
 Write a short note (2-3 sentences) that a doctor can paste directly into their chart. Include: drug names, whether interaction is flagged, what patients reported, and any clinical consideration. Format it as a clinical note."""
 
-    message = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=250,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(prompt)
+    return response.text
 
 def analyze_patient_similarity(drug_a: str, drug_b: str, patient_age: int, patient_conditions: str, narratives: list) -> str:
-    """Use Claude to compare patient against FAERS cases"""
-    client = Anthropic()
-
+    """Use Gemini to compare patient against FAERS cases"""
     narrative_text = "\n\n".join([
         f"Case {i+1}: {n['text']}"
         for i, n in enumerate(narratives)
@@ -238,12 +228,9 @@ Compare: Does this patient resemble the people who had bad reactions?
 Be specific. Format: "Similarity: [HIGH/MOD/LOW] because..."
 """
 
-    message = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=200,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(prompt)
+    return response.text
 
 # API Endpoints
 @app.post("/check-combination")
