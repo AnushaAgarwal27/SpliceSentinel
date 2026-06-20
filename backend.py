@@ -11,8 +11,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENFDA_API_KEY = os.getenv("OPENFDA_API_KEY")
 if not GEMINI_API_KEY:
     raise ValueError("GEMINI_API_KEY environment variable not set")
+if not OPENFDA_API_KEY:
+    raise ValueError("OPENFDA_API_KEY environment variable not set")
 genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI()
@@ -68,7 +71,8 @@ def query_openfda(drug_name: str, additional_filter: str = "") -> dict:
 
     params = {
         "search": search_term,
-        "limit": 100
+        "limit": 100,
+        "api_key": OPENFDA_API_KEY
     }
 
     try:
@@ -143,11 +147,12 @@ def compute_prr(combo_reports: list, drug_a_reports: list, drug_b_reports: list)
     }
 
 def get_narrative_reports(drug_a: str, drug_b: str) -> list:
-    """Fetch reports with narrative text for Claude analysis"""
+    """Fetch reports with narrative text for Gemini analysis"""
     search_term = f'patient.drug.medicinalproduct:"{drug_a.upper()}" AND patient.drug.medicinalproduct:"{drug_b.upper()}"'
     params = {
         "search": search_term,
-        "limit": 20
+        "limit": 20,
+        "api_key": OPENFDA_API_KEY
     }
     try:
         response = httpx.get(OPENFDA_BASE, params=params, timeout=10)
@@ -181,9 +186,13 @@ Summarize in 2-3 sentences: what symptom or pattern emerges? How severe? How soo
 
 Keep it plain language, suitable for a doctor to read."""
 
-    model = genai.GenerativeModel("gemini-pro")
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Gemini API error: {e}")
+        return f"Error: Could not generate summary. API key may be invalid. Error: {str(e)}"
 
 def generate_clinical_note(drug_a: str, drug_b: str, risk_level: str, summary: str, report_count: int, patient_age: int = None, patient_conditions: str = None) -> str:
     """Generate a clinical note for the doctor"""
@@ -200,9 +209,13 @@ Pattern from patient reports: {summary}{patient_context}
 
 Write a short note (2-3 sentences) that a doctor can paste directly into their chart. Include: drug names, whether interaction is flagged, what patients reported, and any clinical consideration. Format it as a clinical note."""
 
-    model = genai.GenerativeModel("gemini-pro")
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Gemini API error in generate_clinical_note: {e}")
+        return f"Reviewed {drug_a} + {drug_b} combination against FAERS database: {report_count} reports found. Risk level: {risk_level}. (Note generation unavailable due to API error)"
 
 def analyze_patient_similarity(drug_a: str, drug_b: str, patient_age: int, patient_conditions: str, narratives: list) -> str:
     """Use Gemini to compare patient against FAERS cases"""
@@ -228,9 +241,13 @@ Compare: Does this patient resemble the people who had bad reactions?
 Be specific. Format: "Similarity: [HIGH/MOD/LOW] because..."
 """
 
-    model = genai.GenerativeModel("gemini-pro")
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Gemini API error in analyze_patient_similarity: {e}")
+        return f"Similarity analysis unavailable due to API error. (Check Gemini API key validity)"
 
 # API Endpoints
 @app.post("/check-combination")
