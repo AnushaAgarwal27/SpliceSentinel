@@ -540,49 +540,53 @@ async def verify_report(report_id: str):
         report = await fetch_report_by_id(report_id)
 
         if not report:
-            raise HTTPException(status_code=404, detail=f"Report ID {report_id} not found")
+            raise HTTPException(status_code=404, detail=f"Report ID {report_id} not found in FDA database")
 
         # Extract key details for display
-        safetyreportid = report.get("safetyreportid", report_id)
+        safetyreportid = report.get("safetyreportid") or report_id
         receivedate = report.get("receivedate", "Unknown")
 
         # Patient info
         patient = report.get("patient", {})
-        patient_age = patient.get("patientonsetage", "Unknown")
-        patient_sex = patient.get("patientsex", "Unknown")
+        patient_age = str(patient.get("patientonsetage", "Unknown"))
+        patient_sex = patient.get("patientsex")
+        if patient_sex == "1":
+            patient_sex = "M"
+        elif patient_sex == "2":
+            patient_sex = "F"
+        else:
+            patient_sex = patient_sex or "Unknown"
 
         # Reactions
         reactions = patient.get("reaction", [])
         if isinstance(reactions, dict):
             reactions = [reactions]
-        reaction_list = [r.get("reactionmeddrapt", "Unknown") for r in reactions]
+        reaction_list = [r.get("reactionmeddrapt", "Unknown") for r in reactions if r]
+        reaction_list = [r for r in reaction_list if r and r != "Unknown"]
 
         # Drugs
         drugs = patient.get("drug", [])
         if isinstance(drugs, dict):
             drugs = [drugs]
-        drug_list = [d.get("medicinalproduct", "Unknown") for d in drugs]
-
-        # Case info
-        cases = report.get("case", {})
-        case_type = cases.get("casetype", "Unknown")
+        drug_list = [d.get("medicinalproduct", "Unknown") for d in drugs if d]
+        drug_list = [d for d in drug_list if d and d != "Unknown"]
 
         return {
             "status": "success",
-            "report_id": safetyreportid,
+            "report_id": str(safetyreportid),
             "receive_date": receivedate,
             "patient_age": patient_age,
             "patient_sex": patient_sex,
-            "reactions": reaction_list,
-            "drugs": drug_list,
-            "case_type": case_type,
-            "raw_report": report
+            "reactions": reaction_list if reaction_list else ["No reactions reported"],
+            "drugs": drug_list if drug_list else ["No drugs reported"]
         }
     except HTTPException:
         raise
     except Exception as e:
         print(f"Error verifying report: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
 # Active WebSocket connections for broadcasting

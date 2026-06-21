@@ -18,13 +18,14 @@ export default function VerificationTool({ isOpen, onClose }) {
       const response = await fetch(
         `http://localhost:8000/api/verify-report/${reportId.trim()}`
       )
-      if (!response.ok) {
-        throw new Error(`Report not found`)
-      }
       const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.detail || `Report not found`)
+      }
       setReport(data)
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'Failed to fetch report')
     } finally {
       setLoading(false)
     }
@@ -108,37 +109,38 @@ export default function VerificationTool({ isOpen, onClose }) {
               {/* Report Details */}
               {report && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
-                        Report ID
-                      </p>
-                      <p className="text-lg text-white font-mono">{report.report_id}</p>
-                    </div>
+                  {/* Report ID - Prominent */}
+                  <div className="bg-indigo-600/20 border border-indigo-500 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-2">
+                      ✓ Report Found
+                    </p>
+                    <p className="text-xl font-mono font-bold text-indigo-300">{report.report_id}</p>
+                  </div>
 
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
                         Received Date
                       </p>
-                      <p className="text-white">
+                      <p className="text-white text-sm">
                         {report.receive_date && report.receive_date !== 'Unknown'
                           ? new Date(report.receive_date).toLocaleDateString()
                           : 'Unknown'}
                       </p>
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
                         Patient Age
                       </p>
-                      <p className="text-white">{report.patient_age}</p>
+                      <p className="text-white text-sm">{report.patient_age} years</p>
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 col-span-2">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
                         Patient Sex
                       </p>
-                      <p className="text-white">
+                      <p className="text-white text-sm">
                         {report.patient_sex === 'M'
                           ? 'Male'
                           : report.patient_sex === 'F'
@@ -150,13 +152,13 @@ export default function VerificationTool({ isOpen, onClose }) {
 
                   {/* Reactions */}
                   {report.reactions && report.reactions.length > 0 && (
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
-                        Reported Reactions
+                        Reported Adverse Reactions
                       </p>
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         {report.reactions.map((reaction, i) => (
-                          <div key={i} className="text-sm text-slate-200">
+                          <div key={i} className="text-sm text-slate-300">
                             • {reaction}
                           </div>
                         ))}
@@ -166,13 +168,13 @@ export default function VerificationTool({ isOpen, onClose }) {
 
                   {/* Drugs */}
                   {report.drugs && report.drugs.length > 0 && (
-                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                       <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
-                        Reported Drugs
+                        Reported Medications
                       </p>
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         {report.drugs.map((drug, i) => (
-                          <div key={i} className="text-sm text-slate-200">
+                          <div key={i} className="text-sm text-slate-300">
                             • {drug}
                           </div>
                         ))}
@@ -183,11 +185,10 @@ export default function VerificationTool({ isOpen, onClose }) {
                   {/* Verification Badge */}
                   <div className="bg-emerald-500/20 border border-emerald-500 rounded-lg p-4">
                     <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-2">
-                      ✓ Verified from FDA
+                      ✓ Real FDA Data
                     </p>
                     <p className="text-sm text-emerald-300">
-                      This report has been retrieved directly from FDA's openFDA database. Data is real
-                      and comes from official adverse event reports.
+                      Retrieved directly from FDA's openFDA database. This is an official adverse event report.
                     </p>
                   </div>
                 </div>
