@@ -17,7 +17,10 @@ Returns top 3-5 most similar cases with:
   - Timing (days to onset)
 """
 
+import logging
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 def calculate_age_similarity(patient_age: int, case_age: int) -> float:
@@ -375,5 +378,19 @@ def find_similar_cases(
     # Sort by similarity descending
     scored_cases.sort(key=lambda x: x["similarity_score"], reverse=True)
 
-    # Return top N
-    return scored_cases[:top_n]
+    # Get top N
+    top_cases = scored_cases[:top_n]
+
+    # Log the top cases selected
+    logger.info(f"\n{'='*80}")
+    logger.info(f"SIMILAR CASES ANALYSIS - TOP {len(top_cases)} MATCHES SELECTED")
+    logger.info(f"{'='*80}")
+    for i, case in enumerate(top_cases, 1):
+        logger.info(f"\nCase #{i}: {case['similarity_score']}% Match")
+        logger.info(f"  Reaction: {case['reaction']}")
+        logger.info(f"  Reason: {case['reason']}")
+        logger.info(f"  Report ID: {case['safetyreportid']}")
+        logger.info(f"  Patient Age: {case['case_age']}, Sex: {case['case_sex']}")
+    logger.info(f"{'='*80}\n")
+
+    return top_cases

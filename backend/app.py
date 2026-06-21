@@ -176,10 +176,51 @@ async def debug_fda_raw(drug_a: str, drug_b: str):
             "sample_reports": data["combo_reports"][:3] if data["combo_reports"] else [],
             "total_reactions_found": len(data["combo_reactions"]),
             "sample_reactions": list(data["combo_reactions"].keys())[:10],
+            "raw_fda_response": data["combo_reports"][:1] if data["combo_reports"] else None,
             "note": "This is raw FDA FAERS data - real adverse event reports"
         }
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"FDA API error: {str(e)}")
+
+
+@app.get("/debug/similar-cases/{drug_a}/{drug_b}")
+async def debug_similar_cases(drug_a: str, drug_b: str):
+    """Debug endpoint: Show how the top 5 similar cases were selected and scored."""
+    try:
+        data = await check_drug_combination(drug_a.upper(), drug_b.upper())
+        similar_cases = data.get("similar_cases", [])
+
+        return {
+            "status": "success",
+            "drug_combination": f"{drug_a.upper()} + {drug_b.upper()}",
+            "total_reports_analyzed": data["combo_total"],
+            "top_similar_cases_found": len(similar_cases),
+            "similar_cases": [
+                {
+                    "rank": i + 1,
+                    "similarity_score": case["similarity_score"],
+                    "match_quality": "High" if case["similarity_score"] >= 50 else "Moderate" if case["similarity_score"] >= 40 else "Fair",
+                    "reaction_reported": case["reaction"],
+                    "why_similar": case["reason"],
+                    "patient_age": case["case_age"],
+                    "patient_sex": case["case_sex"],
+                    "days_to_onset": case["days_to_onset"],
+                    "fda_report_id": case["safetyreportid"],
+                    "verifiable_at": f"https://fis.fda.gov/ (search Report ID: {case['safetyreportid']})"
+                }
+                for i, case in enumerate(similar_cases[:5])
+            ],
+            "scoring_methodology": {
+                "age_proximity": "20% - Matches within ±5 years weighted heavily",
+                "sex_match": "15% - Exact sex match receives full credit",
+                "conditions_match": "20% - Overlap in patient conditions with case indications",
+                "medications_match": "45% - Overlap in patient medications with case medications"
+            },
+            "total_possible_score": "100%",
+            "minimum_threshold": "20% similarity to qualify as a match"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Error retrieving similar cases: {str(e)}")
 
 
 @app.post("/api/extract-patient-data")
