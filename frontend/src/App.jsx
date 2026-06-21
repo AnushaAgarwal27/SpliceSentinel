@@ -230,21 +230,21 @@ export default function App() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
-                    className="rounded-2xl bg-red-900/20 border border-red-500/50 p-8"
+                    className="rounded-2xl bg-gradient-to-br from-indigo-900/20 to-cyan-900/20 border border-indigo-500/30 p-8"
                   >
                     <div className="flex gap-4">
-                      <div className="text-4xl">🚨</div>
+                      <div className="text-4xl">⚠️</div>
                       <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-red-300 mb-4">
+                        <h3 className="text-2xl font-bold text-indigo-300 mb-4">
                           {elevatedSignals.length} High Risk Signal{elevatedSignals.length !== 1 ? 's' : ''} (PRR ≥ 2.0)
                         </h3>
                         <div className="space-y-2 max-h-80 overflow-y-auto">
                           {elevatedSignals.map((sig, i) => {
                             const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
                             return (
-                              <div key={i} className="bg-red-900/30 border border-red-700 rounded p-3 text-sm">
-                                <div className="font-bold text-red-200">{sig.reaction}</div>
-                                <div className="text-xs text-red-300 mt-1">
+                              <div key={i} className="bg-indigo-900/20 border border-indigo-500/30 rounded p-3 text-sm hover:border-indigo-500/60 transition">
+                                <div className="font-bold text-indigo-200">{sig.reaction}</div>
+                                <div className="text-xs text-indigo-300 mt-1">
                                   {sig.combo_count} reports • {((sig.combo_count / results.combo_total) * 100).toFixed(2)}% • PRR: {maxPRR.toFixed(2)}× (A: {sig.prr_vs_drug_a.toFixed(2)}, B: {sig.prr_vs_drug_b.toFixed(2)})
                                 </div>
                               </div>

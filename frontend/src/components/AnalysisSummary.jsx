@@ -35,12 +35,12 @@ export default function AnalysisSummary({ results }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="rounded-2xl bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-indigo-500/30 p-8"
+        className="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-700 p-8"
       >
         <h2 className="text-3xl font-bold text-white mb-2">
           Analysis: {results.drug_a} + {results.drug_b}
         </h2>
-        <p className="text-slate-300">FDA adverse event data analysis</p>
+        <p className="text-slate-400">FDA FAERS adverse event data</p>
       </motion.div>
 
       {/* Summary Stats */}
@@ -48,27 +48,27 @@ export default function AnalysisSummary({ results }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-sm border border-slate-600/50 p-8"
+        className="rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-8"
       >
         <h3 className="text-2xl font-bold text-white mb-6">Summary Statistics</h3>
         <div className="grid md:grid-cols-4 gap-4">
-          <div className="bg-indigo-900/20 rounded-lg p-4 border border-indigo-500/30">
+          <div className="bg-gradient-to-br from-indigo-900/30 to-blue-900/30 rounded-lg p-4 border border-indigo-500/30 hover:border-indigo-500/60 transition">
             <div className="text-3xl font-bold text-indigo-400">{results.combo_total.toLocaleString()}</div>
-            <p className="text-xs text-slate-300 mt-1">Total Reports</p>
+            <p className="text-xs text-slate-400 mt-1">Total Reports</p>
           </div>
-          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-500/30">
-            <div className="text-3xl font-bold text-purple-400">{signals.length}</div>
-            <p className="text-xs text-slate-300 mt-1">Reactions</p>
+          <div className="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 rounded-lg p-4 border border-blue-500/30 hover:border-blue-500/60 transition">
+            <div className="text-3xl font-bold text-blue-400">{signals.length}</div>
+            <p className="text-xs text-slate-400 mt-1">Reactions</p>
           </div>
-          <div className="bg-red-900/20 rounded-lg p-4 border border-red-500/30">
-            <div className="text-3xl font-bold text-red-400">{elevatedSignals.length}</div>
-            <p className="text-xs text-slate-300 mt-1">High Risk (PRR≥2)</p>
+          <div className="bg-gradient-to-br from-cyan-900/30 to-slate-900/30 rounded-lg p-4 border border-cyan-500/30 hover:border-cyan-500/60 transition">
+            <div className="text-3xl font-bold text-cyan-400">{elevatedSignals.length}</div>
+            <p className="text-xs text-slate-400 mt-1">High Risk (PRR≥2)</p>
           </div>
-          <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-500/30">
-            <div className="text-3xl font-bold text-orange-400">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-lg p-4 border border-slate-600/50 hover:border-slate-600 transition">
+            <div className="text-3xl font-bold text-slate-300">
               {signals.length > 0 ? (results.combo_total / signals.length).toFixed(1) : '0'}
             </div>
-            <p className="text-xs text-slate-300 mt-1">Avg/Reaction</p>
+            <p className="text-xs text-slate-400 mt-1">Avg/Reaction</p>
           </div>
         </div>
       </motion.div>
@@ -78,12 +78,12 @@ export default function AnalysisSummary({ results }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-sm border border-slate-600/50 p-8"
+        className="rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-8"
       >
         <h3 className="text-2xl font-bold text-white mb-4">All Reactions (Top 50)</h3>
         <div className="overflow-x-auto overflow-y-auto max-h-96 border border-slate-700 rounded-lg">
           <table className="w-full text-xs text-slate-300">
-            <thead className="border-b border-slate-600 sticky top-0 bg-slate-900">
+            <thead className="border-b border-slate-700 sticky top-0 bg-slate-900/80">
               <tr className="text-left text-slate-200">
                 <th className="pb-2 px-2 py-2">Reaction</th>
                 <th className="pb-2 px-2 text-right">Reports</th>
@@ -99,13 +99,13 @@ export default function AnalysisSummary({ results }) {
                 const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
                 const isElevated = maxPRR >= 2
                 return (
-                  <tr key={i} className={`border-b border-slate-700 hover:bg-slate-700/20 transition ${isElevated ? 'bg-red-900/10' : ''}`}>
+                  <tr key={i} className={`border-b border-slate-700/50 hover:bg-indigo-900/10 transition ${isElevated ? 'bg-indigo-900/20' : ''}`}>
                     <td className="py-2 px-2">{i + 1}. {sig.reaction}</td>
                     <td className="py-2 px-2 text-right font-semibold">{sig.combo_count}</td>
                     <td className="py-2 px-2 text-right">{((sig.combo_count / results.combo_total) * 100).toFixed(2)}%</td>
                     <td className="py-2 px-2 text-right">{sig.prr_vs_drug_a.toFixed(2)}</td>
                     <td className="py-2 px-2 text-right">{sig.prr_vs_drug_b.toFixed(2)}</td>
-                    <td className="py-2 px-2 text-right font-bold" style={{ color: isElevated ? '#ef4444' : '#94a3b8' }}>
+                    <td className="py-2 px-2 text-right font-bold" style={{ color: isElevated ? '#4fb3ff' : '#94a3b8' }}>
                       {maxPRR.toFixed(2)}
                     </td>
                     <td className="py-2 px-2 text-right">{isElevated ? '🚨' : '-'}</td>
