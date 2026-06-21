@@ -251,7 +251,7 @@ Be specific. Format: "Similarity: [HIGH/MOD/LOW] because..."
     return message.content[0].text
 
 # API Endpoints
-@app.post("/check-combination")
+@app.post("/api/check-combination")
 async def check_combination(drug_a: str, drug_b: str, patient_age: int = None, patient_conditions: str = None):
     """Main endpoint: check drug combination against FDA data"""
 
