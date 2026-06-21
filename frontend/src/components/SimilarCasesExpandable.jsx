@@ -266,12 +266,31 @@ export default function SimilarCasesExpandable({
                 <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 space-y-3">
                   <div>
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">FDA Report ID</p>
-                    <code className="text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-2 rounded border border-slate-700 block">{active.safetyreportid}</code>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(active.safetyreportid)
+                      }}
+                      className="w-full text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-2 rounded border border-slate-700 block hover:border-indigo-500 hover:bg-slate-800 transition cursor-pointer text-left"
+                    >
+                      {active.safetyreportid} (click to copy)
+                    </button>
                   </div>
 
                   <div className="border-t border-slate-700 pt-2">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Verification</p>
-                    <p className="text-xs text-slate-300">Search this Report ID on FDA FAERS at: <span className="font-mono text-indigo-300">fda.gov/faers</span></p>
+                    <p className="text-xs text-slate-300">
+                      1. Open{' '}
+                      <a
+                        href="https://fis.fda.gov/extensions/FIS/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-400 hover:text-indigo-300 underline font-semibold"
+                      >
+                        FDA FAERS Dashboard
+                      </a>
+                      <br />
+                      2. Search for Report ID (copied above)
+                    </p>
                   </div>
                 </div>
 
