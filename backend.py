@@ -1,15 +1,27 @@
 import httpx
 import sqlite3
 import json
+import os
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from anthropic import Anthropic
-import phoenix as px
+from phoenix.otel import register
 from openinference.instrumentation.anthropic import AnthropicInstrumentor
 
-# Initialize Arize Phoenix tracing
-px.launch_app()
+# Initialize Phoenix Cloud tracing
+api_key = os.getenv("PHOENIX_API_KEY")
+if api_key:
+    register(
+        project_name="drug-interaction-checker",
+        api_key=api_key,
+        endpoint="https://app.phoenix.arize.com/v1/traces",
+        auto_instrument=True,
+    )
+    print("✅ Phoenix Cloud tracing enabled for project 'drug-interaction-checker'")
+else:
+    print("⚠️ PHOENIX_API_KEY not set. Tracing disabled.")
+
 AnthropicInstrumentor().instrument()
 
 app = FastAPI()
