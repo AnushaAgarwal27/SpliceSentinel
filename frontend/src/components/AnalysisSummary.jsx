@@ -68,7 +68,10 @@ export function ReactionsTable({ results }) {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-8"
     >
-      <h3 className="text-2xl font-bold text-white mb-4">All Reactions (Top 50)</h3>
+      <div className="mb-4">
+        <h3 className="text-2xl font-bold text-white">Most Frequent Adverse Reactions (Across All Cases)</h3>
+        <p className="text-xs text-slate-400 mt-1">Reactions ranked by frequency and statistical signal strength (PRR)</p>
+      </div>
       <div className="overflow-x-auto overflow-y-auto max-h-96 border border-slate-700 rounded-lg">
         <table className="w-full text-xs text-slate-300">
           <thead className="border-b border-slate-700 sticky top-0 bg-slate-900/80">

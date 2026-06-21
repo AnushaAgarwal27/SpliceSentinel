@@ -74,7 +74,10 @@ export default function SimilarCasesExpandable({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, duration: 0.5 }}
     >
-      <h3 className="text-2xl font-bold text-white mb-4">Similar Patient Cases - Comparative Analysis</h3>
+      <div className="mb-4">
+        <h3 className="text-2xl font-bold text-white">Individual Patient Matches (Top 5)</h3>
+        <p className="text-xs text-slate-400 mt-1">Cases with similar age, sex, conditions, and medications</p>
+      </div>
 
       <AnimatePresence>
         {active && typeof active === 'object' && (
