@@ -15,6 +15,7 @@ import ProofPage from './components/ProofPage'
 export default function App() {
   const [showLanding, setShowLanding] = useState(true)
   const [results, setResults] = useState(null)
+  const [patientData, setPatientData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [progress, setProgress] = useState({})
@@ -80,6 +81,7 @@ export default function App() {
 
       console.log('🟢 Setting results...')
       setResults(response.data)
+      setPatientData(patientData)
       console.log('🟢 Results set successfully')
       setProgress({ stage: 'complete' })
     } catch (err) {
@@ -222,6 +224,10 @@ export default function App() {
                   combo_total={results.combo_total}
                   drug_a={results.drug_a}
                   drug_b={results.drug_b}
+                  patient_age={patientData?.patient_age}
+                  patient_sex={patientData?.patient_sex}
+                  patient_conditions={patientData?.patient_conditions || []}
+                  patient_current_meds={patientData?.patient_current_meds || []}
                 />
               )}
 

@@ -835,6 +835,158 @@
           "prr_vs_drug_b": 999.0
         }
       ]
+    },
+    {
+      "timestamp": "2026-06-21T07:37:57.314793",
+      "combo_total": 10612,
+      "signals": [
+        {
+          "reaction": "Fall",
+          "combo_count": 7,
+          "rate_in_combo": 0.76,
+          "prr_vs_drug_a": 1634.84,
+          "prr_vs_drug_b": 65.55
+        },
+        {
+          "reaction": "Drug dose omission",
+          "combo_count": 6,
+          "rate_in_combo": 0.65,
+          "prr_vs_drug_a": 1401.29,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Insomnia",
+          "combo_count": 5,
+          "rate_in_combo": 0.54,
+          "prr_vs_drug_a": 1167.74,
+          "prr_vs_drug_b": 46.82
+        },
+        {
+          "reaction": "Weight increased",
+          "combo_count": 5,
+          "rate_in_combo": 0.54,
+          "prr_vs_drug_a": 1167.74,
+          "prr_vs_drug_b": 46.82
+        },
+        {
+          "reaction": "Duodenal ulcer repair",
+          "combo_count": 6,
+          "rate_in_combo": 0.06,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Cellulitis",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 172.1
+        },
+        {
+          "reaction": "Implant site extravasation",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Implant site infection",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Renal failure",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 172.1
+        },
+        {
+          "reaction": "Blood potassium decreased",
+          "combo_count": 4,
+          "rate_in_combo": 0.04,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-06-21T07:45:40.215296",
+      "combo_total": 10612,
+      "signals": [
+        {
+          "reaction": "Fall",
+          "combo_count": 7,
+          "rate_in_combo": 0.76,
+          "prr_vs_drug_a": 1634.84,
+          "prr_vs_drug_b": 65.55
+        },
+        {
+          "reaction": "Drug dose omission",
+          "combo_count": 6,
+          "rate_in_combo": 0.65,
+          "prr_vs_drug_a": 1401.29,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Insomnia",
+          "combo_count": 5,
+          "rate_in_combo": 0.54,
+          "prr_vs_drug_a": 1167.74,
+          "prr_vs_drug_b": 46.82
+        },
+        {
+          "reaction": "Weight increased",
+          "combo_count": 5,
+          "rate_in_combo": 0.54,
+          "prr_vs_drug_a": 1167.74,
+          "prr_vs_drug_b": 46.82
+        },
+        {
+          "reaction": "Duodenal ulcer repair",
+          "combo_count": 6,
+          "rate_in_combo": 0.06,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Cellulitis",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 172.1
+        },
+        {
+          "reaction": "Implant site extravasation",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Implant site infection",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Renal failure",
+          "combo_count": 5,
+          "rate_in_combo": 0.05,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 172.1
+        },
+        {
+          "reaction": "Blood potassium decreased",
+          "combo_count": 4,
+          "rate_in_combo": 0.04,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        }
+      ]
     }
   ],
   "IBUPROFEN+WARFARIN": [

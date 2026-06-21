@@ -26,7 +26,17 @@ export const CloseIcon = () => {
   )
 }
 
-export default function SimilarCasesExpandable({ cases = [], signals = [], combo_total = 0, drug_a = '', drug_b = '' }) {
+export default function SimilarCasesExpandable({
+  cases = [],
+  signals = [],
+  combo_total = 0,
+  drug_a = '',
+  drug_b = '',
+  patient_age = null,
+  patient_sex = null,
+  patient_conditions = [],
+  patient_current_meds = []
+}) {
   const [active, setActive] = useState(null)
   const ref = useRef(null)
   const id = useId()
@@ -53,9 +63,9 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
   useOutsideClick(ref, () => setActive(null))
 
   const getSimilarityColor = (similarity) => {
-    if (similarity >= 50) return { bg: 'bg-emerald-500', text: 'text-emerald-500', border: 'border-emerald-400' }
-    if (similarity >= 40) return { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-400' }
-    return { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-400' }
+    if (similarity >= 50) return { bg: 'bg-emerald-500', text: 'text-emerald-500', border: 'border-emerald-400', lightBg: 'bg-emerald-600/20', lightBorder: 'border-emerald-500/30' }
+    if (similarity >= 40) return { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-400', lightBg: 'bg-blue-600/20', lightBorder: 'border-blue-500/30' }
+    return { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-400', lightBg: 'bg-purple-600/20', lightBorder: 'border-purple-500/30' }
   }
 
   return (
@@ -79,7 +89,7 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
 
       <AnimatePresence>
         {active && typeof active === 'object' ? (
-          <div className="fixed inset-0 grid place-items-center z-[100] p-4">
+          <div className="fixed inset-0 grid place-items-center z-[100] p-4 overflow-y-auto">
             <motion.button
               key={`button-${active.safetyreportid}-${id}`}
               layout
@@ -95,16 +105,16 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
             <motion.div
               layoutId={`card-${active.safetyreportid}-${id}`}
               ref={ref}
-              className="w-full max-w-2xl bg-white rounded-2xl overflow-hidden shadow-2xl"
+              className="w-full max-w-4xl bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 my-8"
             >
               {/* Header */}
-              <div className={`${getSimilarityColor(active.similarity_score).bg} p-6 text-white`}>
-                <div className="flex justify-between items-start mb-3">
+              <div className={`${getSimilarityColor(active.similarity_score).bg} p-8 text-white`}>
+                <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-semibold opacity-90">Similarity Match</p>
-                    <p className="text-4xl font-bold">{active.similarity_score}%</p>
+                    <p className="text-5xl font-bold">{active.similarity_score}%</p>
                   </div>
-                  <div className="text-4xl">🔗</div>
+                  <div className="text-5xl">🔗</div>
                 </div>
               </div>
 
@@ -112,49 +122,118 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
               <div className="p-8 space-y-6">
                 {/* Reaction Name */}
                 <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Adverse Reaction</p>
-                  <h3 className="text-2xl font-bold text-slate-900">{active.reaction}</h3>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Adverse Reaction</p>
+                  <h3 className="text-3xl font-bold text-white">{active.reaction}</h3>
                 </div>
 
                 {/* Why Similar */}
-                <div>
-                  <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">Why Similar</p>
-                  <p className="text-slate-700">{active.reason}</p>
+                <div className={`${getSimilarityColor(active.similarity_score).lightBg} ${getSimilarityColor(active.similarity_score).lightBorder} border rounded-lg p-4`}>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Why This is a Match</p>
+                  <p className="text-slate-200">{active.reason}</p>
                 </div>
 
-                {/* Patient Details */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Age</p>
-                    <p className="text-lg font-bold text-slate-900">{active.case_age || '—'}</p>
-                  </div>
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Sex</p>
-                    <p className="text-lg font-bold text-slate-900">
-                      {active.case_sex ? (active.case_sex === 'M' ? '♂ Male' : '♀ Female') : '—'}
-                    </p>
-                  </div>
-                  {active.days_to_onset && (
-                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                      <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Onset (Days)</p>
-                      <p className="text-lg font-bold text-slate-900">{active.days_to_onset}</p>
+                {/* Comparison - Current vs Similar */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Current Patient */}
+                  <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span>👤 Your Patient</span>
+                    </h4>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Age</p>
+                        <p className="text-white font-semibold">{patient_age || '—'} years</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Sex</p>
+                        <p className="text-white font-semibold">{patient_sex ? (patient_sex === 'M' ? '♂ Male' : '♀ Female') : '—'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Drug Combination</p>
+                        <p className="text-white font-semibold">{drug_a} + {drug_b}</p>
+                      </div>
+                      {patient_conditions.length > 0 && (
+                        <div>
+                          <p className="text-xs text-slate-400 mb-1">Conditions</p>
+                          <div className="flex flex-wrap gap-2">
+                            {patient_conditions.map((c, i) => (
+                              <span key={i} className="text-xs bg-indigo-900/30 border border-indigo-500/30 text-indigo-300 px-2 py-1 rounded">
+                                {c}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+
+                  {/* Similar Case */}
+                  <div className={`${getSimilarityColor(active.similarity_score).lightBg} ${getSimilarityColor(active.similarity_score).lightBorder} border rounded-lg p-6`}>
+                    <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                      <span>🔍 Similar FDA Case</span>
+                    </h4>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Age</p>
+                        <p className="text-white font-semibold">{active.case_age || '—'} years {patient_age && Math.abs(parseInt(active.case_age) - patient_age) <= 5 ? '✅' : ''}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Sex</p>
+                        <p className="text-white font-semibold">{active.case_sex ? (active.case_sex === 'M' ? '♂ Male' : '♀ Female') : '—'} {active.case_sex === patient_sex ? '✅' : ''}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 mb-1">Reaction Reported</p>
+                        <p className="text-white font-semibold">{active.reaction}</p>
+                      </div>
+                      {active.days_to_onset && (
+                        <div>
+                          <p className="text-xs text-slate-400 mb-1">Days to Onset</p>
+                          <p className="text-white font-semibold">{active.days_to_onset} days</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Match Breakdown */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                  <p className="text-sm font-semibold text-white mb-4">📊 How the {active.similarity_score}% Match is Calculated</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between text-slate-300">
+                      <span>🎂 Age Proximity</span>
+                      <span>20%</span>
+                    </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>♂️ Sex Match</span>
+                      <span>15%</span>
+                    </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>🏥 Conditions Match</span>
+                      <span>20%</span>
+                    </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>💊 Medications Match</span>
+                      <span>45%</span>
+                    </div>
+                    <div className="border-t border-slate-700 pt-2 mt-2 flex justify-between font-bold text-white">
+                      <span>Total Similarity</span>
+                      <span>{active.similarity_score}%</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Report ID */}
-                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-                  <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-2">FDA Report ID</p>
-                  <code className="text-sm font-mono text-indigo-900 break-all">{active.safetyreportid}</code>
+                <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-lg p-4">
+                  <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-2">📋 FDA Report ID</p>
+                  <code className="text-sm font-mono text-indigo-300 break-all">{active.safetyreportid}</code>
+                  <p className="text-xs text-slate-400 mt-2">✓ Verifiable on FDA.gov</p>
                 </div>
 
-                {/* Drug Combination */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-                  <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Drug Combination</p>
-                  <p className="text-slate-900 font-semibold">
-                    {drug_a} + {drug_b}
-                  </p>
-                  <p className="text-xs text-slate-600 mt-1">From {combo_total?.toLocaleString()} total adverse reports</p>
+                {/* Drug Combination Context */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">💊 Drug Combination Context</p>
+                  <p className="text-white font-semibold mb-1">{drug_a} + {drug_b}</p>
+                  <p className="text-xs text-slate-400">From {combo_total?.toLocaleString()} total adverse reports in FDA FAERS</p>
                 </div>
               </div>
             </motion.div>
@@ -192,7 +271,7 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
               </p>
 
               {/* Patient Info Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2">
                 {caseData.case_age && (
                   <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-medium">
                     Age {caseData.case_age}
@@ -204,11 +283,6 @@ export default function SimilarCasesExpandable({ cases = [], signals = [], combo
                   </span>
                 )}
               </div>
-
-              {/* View Button */}
-              <button className={`w-full ${colors.bg} text-white font-semibold py-2 rounded-lg hover:opacity-90 transition text-sm`}>
-                View Details
-              </button>
             </motion.div>
           )
         })}
