@@ -207,50 +207,82 @@ export default function SimilarCasesExpandable({
                   </div>
                 </div>
 
-                {/* Match Breakdown */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-5">Similarity Score Components</p>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Age Proximity</span>
-                      <div className="flex items-center gap-3">
-                        <div className="h-1 bg-slate-700 rounded w-12"></div>
-                        <span className="text-indigo-400 font-semibold min-w-max">20%</span>
+                {/* Match Breakdown with Methodology */}
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-6">
+                  <div>
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-5">Similarity Score Breakdown</p>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center text-slate-300">
+                        <span className="text-slate-400">Age Proximity</span>
+                        <div className="flex items-center gap-3">
+                          <div className="h-1 bg-slate-700 rounded w-12"></div>
+                          <span className="text-indigo-400 font-semibold min-w-max">20%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-300">
+                        <span className="text-slate-400">Sex Match</span>
+                        <div className="flex items-center gap-3">
+                          <div className="h-1 bg-slate-700 rounded w-9"></div>
+                          <span className="text-indigo-400 font-semibold min-w-max">15%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-300">
+                        <span className="text-slate-400">Conditions Match</span>
+                        <div className="flex items-center gap-3">
+                          <div className="h-1 bg-slate-700 rounded w-12"></div>
+                          <span className="text-indigo-400 font-semibold min-w-max">20%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-300">
+                        <span className="text-slate-400">Medications Match</span>
+                        <div className="flex items-center gap-3">
+                          <div className="h-1 bg-slate-700 rounded w-28"></div>
+                          <span className="text-indigo-400 font-semibold min-w-max">45%</span>
+                        </div>
+                      </div>
+                      <div className="border-t border-slate-700 pt-4 mt-4 flex justify-between font-bold">
+                        <span className="text-white">Total Similarity Score</span>
+                        <span className="text-indigo-400 text-lg">{active.similarity_score}%</span>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Sex Match</span>
-                      <div className="flex items-center gap-3">
-                        <div className="h-1 bg-slate-700 rounded w-9"></div>
-                        <span className="text-indigo-400 font-semibold min-w-max">15%</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Conditions Match</span>
-                      <div className="flex items-center gap-3">
-                        <div className="h-1 bg-slate-700 rounded w-12"></div>
-                        <span className="text-indigo-400 font-semibold min-w-max">20%</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center text-slate-300">
-                      <span className="text-slate-400">Medications Match</span>
-                      <div className="flex items-center gap-3">
-                        <div className="h-1 bg-slate-700 rounded w-28"></div>
-                        <span className="text-indigo-400 font-semibold min-w-max">45%</span>
-                      </div>
-                    </div>
-                    <div className="border-t border-slate-700 pt-4 mt-4 flex justify-between font-bold">
-                      <span className="text-white">Total Similarity Score</span>
-                      <span className="text-indigo-400 text-lg">{active.similarity_score}%</span>
+                  </div>
+
+                  <div className="border-t border-slate-700 pt-6">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">How This Score Was Calculated</p>
+                    <div className="space-y-2 text-xs text-slate-300 leading-relaxed">
+                      <p>This case received a {active.similarity_score}% match score based on:</p>
+                      <ul className="space-y-1 ml-4">
+                        <li>• <strong>Age:</strong> Case patient age {active.case_age} vs your patient age {patient_age}</li>
+                        <li>• <strong>Sex:</strong> Case sex {active.case_sex === patient_sex ? '(matches)' : '(differs)'}</li>
+                        <li>• <strong>Conditions:</strong> Overlap between patient conditions and case indications</li>
+                        <li>• <strong>Medications:</strong> Patient on same drugs as case patient</li>
+                      </ul>
+                      <p className="text-slate-400 mt-3">Minimum threshold for selection: 20% similarity</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Report ID */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">FDA FAERS Report Identifier</p>
-                  <code className="text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-3 rounded border border-slate-700 block mb-3">{active.safetyreportid}</code>
-                  <p className="text-xs text-slate-500">This report is publicly verifiable through FDA's FAERS database</p>
+                {/* Report ID with Verification */}
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-4">
+                  <div>
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">FDA FAERS Report Identifier</p>
+                    <code className="text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-3 rounded border border-slate-700 block">{active.safetyreportid}</code>
+                  </div>
+
+                  <div className="border-t border-slate-700 pt-4">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Verification Links</p>
+                    <div className="space-y-2">
+                      <a
+                        href={`https://fis.fda.gov/sense/app/1d6c6f94-3d59-4e9e-b365-e282632b2fc9/sheet/7adf9e1e-b01e-4788-a128-41b674950735/state/analysis`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm transition"
+                      >
+                        Search FDA FAERS Dashboard →
+                      </a>
+                      <p className="text-xs text-slate-500">Search for Report ID: {active.safetyreportid}</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Drug Combination Context */}
@@ -258,6 +290,43 @@ export default function SimilarCasesExpandable({
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Drug Combination Analysis Context</p>
                   <p className="text-white font-semibold mb-2">{drug_a} + {drug_b}</p>
                   <p className="text-xs text-slate-400">Based on analysis of {combo_total?.toLocaleString()} documented adverse events from FDA FAERS database for this combination</p>
+                </div>
+
+                {/* Data Authenticity & Proof */}
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-4">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Why This Data is Real & Verifiable</p>
+
+                  <div className="space-y-3 text-xs text-slate-300">
+                    <div className="pb-3 border-b border-slate-800">
+                      <p className="font-semibold text-slate-200 mb-1">Official Government Source</p>
+                      <p className="text-slate-400">This case comes from FDA FAERS (Adverse Event Reporting System) - the official FDA adverse event database</p>
+                    </div>
+
+                    <div className="pb-3 border-b border-slate-800">
+                      <p className="font-semibold text-slate-200 mb-1">Real Patient Report</p>
+                      <p className="text-slate-400">De-identified adverse event report submitted by healthcare providers, pharmacists, or patients directly to FDA</p>
+                    </div>
+
+                    <div className="pb-3 border-b border-slate-800">
+                      <p className="font-semibold text-slate-200 mb-1">Publicly Searchable</p>
+                      <p className="text-slate-400">Report ID {active.safetyreportid} can be searched in FDA FAERS Public Dashboard by anyone</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-slate-200 mb-1">Not Simulation or AI Generated</p>
+                      <p className="text-slate-400">This is production data from active patient reports, not synthetic or generated</p>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-slate-700 pt-4 mt-4 bg-slate-800/30 rounded p-3">
+                    <p className="text-xs text-slate-400 mb-2">To independently verify this case:</p>
+                    <ol className="space-y-1 text-xs text-slate-300 list-decimal list-inside">
+                      <li>Note Report ID: <code className="text-indigo-300 font-mono">{active.safetyreportid}</code></li>
+                      <li>Visit FDA FAERS Dashboard (link above)</li>
+                      <li>Search for this Report ID</li>
+                      <li>View the complete adverse event report</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </motion.div>
