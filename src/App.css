@@ -1,0 +1,277 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.header .subtitle {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.input-section {
+  padding: 40px;
+  background: #fafbfc;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2c3e50;
+  font-size: 0.95em;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e1e8ed;
+  border-radius: 6px;
+  font-size: 1em;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-group input:disabled {
+  background: #f0f2f5;
+  cursor: not-allowed;
+}
+
+.check-button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 20px;
+}
+
+.check-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.check-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e74c3c;
+  padding: 15px 40px;
+  background: #fadbd8;
+  border-left: 4px solid #e74c3c;
+}
+
+.results-section {
+  padding: 40px;
+}
+
+.risk-flag {
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.risk-flag.elevated {
+  background: #fadbd8;
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+}
+
+.risk-flag.no_notable_signal {
+  background: #d5f4e6;
+  border-left: 4px solid #27ae60;
+  color: #1e8449;
+}
+
+.risk-flag h2 {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+}
+
+.risk-flag p {
+  font-size: 1em;
+  opacity: 0.9;
+}
+
+.reactions-section {
+  margin-bottom: 40px;
+}
+
+.reactions-section h3 {
+  font-size: 1.3em;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e1e8ed;
+}
+
+th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.narrative-section,
+.similarity-section {
+  margin-bottom: 40px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.narrative-section h3,
+.similarity-section h3 {
+  font-size: 1.3em;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.narrative-text,
+.similarity-text {
+  font-size: 1em;
+  line-height: 1.6;
+  color: #34495e;
+  margin-bottom: 10px;
+}
+
+.source {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.note-section {
+  background: #ecf0f1;
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.note-section h3 {
+  font-size: 1.3em;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.note-box {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #bdc3c7;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.copy-button {
+  width: 100%;
+  padding: 12px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-button:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 1.8em;
+  }
+
+  .input-section,
+  .results-section {
+    padding: 20px;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+}
