@@ -45,8 +45,8 @@ export function SummaryStats({ results }) {
           <div className="text-3xl font-bold text-gold-muted">{elevatedSignals.length}</div>
           <p className="text-xs text-text-warm-gray mt-1">High Risk (PRR≥2)</p>
         </div>
-        <div className="bg-gradient-to-br from-text-warm-gray/10 to-text-warm-gray/5 rounded-lg p-4 border border-text-warm-gray/30 hover:border-text-warm-gray/50 transition">
-          <div className="text-3xl font-bold text-text-off-white">
+        <div className="bg-gradient-to-br from-gold-muted/20 to-gold-muted/10 rounded-lg p-4 border border-gold-muted/50 hover:border-gold-muted transition">
+          <div className="text-3xl font-bold text-gold-muted">
             {signals.length > 0 ? (results.combo_total / signals.length).toFixed(1) : '0'}
           </div>
           <p className="text-xs text-text-warm-gray mt-1">Avg/Reaction</p>

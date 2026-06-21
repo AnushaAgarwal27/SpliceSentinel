@@ -1,100 +1,32 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
-import { ClipboardList, Pill, Lock, Zap } from 'lucide-react'
+import { ClipboardList, Pill, Lock, Zap, CheckCircle2, RotateCcw, ShieldCheck } from 'lucide-react'
 
 const AnimatedBackground = () => {
-  const gridDots = []
-  for (let i = 0; i < 15; i++) {
-    for (let j = 0; j < 15; j++) {
-      gridDots.push({ x: (i * 100) / 15, y: (j * 100) / 15 })
-    }
-  }
-
   return (
-    <div className="fixed inset-0 bg-bg-dark overflow-hidden -z-10">
+    <div
+      className="fixed inset-0 pointer-events-none z-0"
+      style={{
+        background: `
+          radial-gradient(circle at 20% 30%, rgba(34,139,87,0.08), transparent 40%),
+          radial-gradient(circle at 80% 70%, rgba(34,139,87,0.06), transparent 40%),
+          radial-gradient(circle at 50% 90%, rgba(34,139,87,0.05), transparent 35%)
+        `,
+        backgroundSize: '200% 200%',
+        animation: 'drift 20s ease-in-out infinite',
+      }}
+    >
       <style>{`
-        @keyframes drift-slow-1 {
-          0%, 100% { transform: translate(0px, 0px); }
-          25% { transform: translate(-20px, 15px); }
-          50% { transform: translate(-10px, 25px); }
-          75% { transform: translate(15px, 10px); }
+        @keyframes drift {
+          0%, 100% {
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 100% 100%;
+          }
         }
-        @keyframes drift-slow-2 {
-          0%, 100% { transform: translate(0px, 0px); }
-          25% { transform: translate(20px, -15px); }
-          50% { transform: translate(10px, -25px); }
-          75% { transform: translate(-15px, -10px); }
-        }
-        @keyframes drift-slow-3 {
-          0%, 100% { transform: translate(0px, 0px); }
-          25% { transform: translate(-15px, -20px); }
-          50% { transform: translate(10px, -15px); }
-          75% { transform: translate(20px, 10px); }
-        }
-        @keyframes drift-slow-4 {
-          0%, 100% { transform: translate(0px, 0px); }
-          25% { transform: translate(15px, 20px); }
-          50% { transform: translate(-10px, 15px); }
-          75% { transform: translate(-20px, -10px); }
-        }
-        .glow-orb-1 { animation: drift-slow-1 18s ease-in-out infinite; }
-        .glow-orb-2 { animation: drift-slow-2 20s ease-in-out infinite; }
-        .glow-orb-3 { animation: drift-slow-3 17s ease-in-out infinite; }
-        .glow-orb-4 { animation: drift-slow-4 19s ease-in-out infinite; }
       `}</style>
-
-      {/* Grid of dots background */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.15, pointerEvents: 'none' }}
-      >
-        {gridDots.map((dot, idx) => (
-          <circle
-            key={idx}
-            cx={`${dot.x}%`}
-            cy={`${dot.y}%`}
-            r="2"
-            fill="rgba(34, 197, 94, 0.6)"
-          />
-        ))}
-      </svg>
-
-      {/* Glowing orbs - top left */}
-      <div
-        className="glow-orb-1 absolute top-20 left-20 w-96 h-96 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.08) 40%, transparent 70%)',
-          filter: 'blur(50px)',
-        }}
-      />
-
-      {/* Glowing orbs - top right */}
-      <div
-        className="glow-orb-2 absolute -top-20 -right-20 w-96 h-96 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.22) 0%, rgba(34, 197, 94, 0.06) 50%, transparent 70%)',
-          filter: 'blur(60px)',
-        }}
-      />
-
-      {/* Glowing orbs - bottom left */}
-      <div
-        className="glow-orb-3 absolute -bottom-32 -left-32 w-96 h-96 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.05) 45%, transparent 75%)',
-          filter: 'blur(65px)',
-        }}
-      />
-
-      {/* Glowing orbs - bottom right */}
-      <div
-        className="glow-orb-4 absolute -bottom-20 -right-20 w-96 h-96 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.23) 0%, rgba(34, 197, 94, 0.07) 40%, transparent 70%)',
-          filter: 'blur(55px)',
-        }}
-      />
     </div>
   )
 }
@@ -119,8 +51,20 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
       setEditMode(false)
       setError(null)
       setLoading(false)
+      setDragActive(null)
     }
   }, [parentResults, parentLoading])
+
+  // Extra safety: if we have extracted data but parent has results, clear local state
+  useEffect(() => {
+    if (parentResults !== null && parentResults !== undefined) {
+      setExtractedData(null)
+      setFormData({})
+      setPatientReport(null)
+      setPrescription(null)
+      setEditMode(false)
+    }
+  }, [parentResults])
 
   const handleDrag = (e, type) => {
     e.preventDefault()
@@ -257,26 +201,37 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
             transition={{ duration: 0.6 }}
             className="bg-card-dark backdrop-blur-sm border border-teal-deep/30 rounded-2xl p-8"
           >
-            <h2 className="text-3xl font-serif font-light text-text-off-white mb-2">✅ Review Extracted Data</h2>
+            <div className="flex items-center gap-3 mb-2">
+              <CheckCircle2 size={28} color="#7FA88C" strokeWidth={2} />
+              <h2 className="text-3xl font-serif font-light text-text-off-white">Review Extracted Data</h2>
+            </div>
             <p className="text-text-warm-gray mb-8 font-sans">Verify the information extracted from your documents. Edit if needed.</p>
 
             <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Patient Age</label>
+              {/* Patient Age - from report */}
+              <div className="border-l-4 border-l-[#7FA88C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Patient Age</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#7FA88C] bg-[#7FA88C]/15 px-2 py-0.5 rounded-full">From Patient Report</span>
+                </div>
                 <input
                   type="number"
                   value={formData.patient_age || ''}
                   onChange={(e) => handleFieldChange('patient_age', parseInt(e.target.value) || '')}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#7FA88C] focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Patient Sex</label>
+              {/* Patient Sex - from report */}
+              <div className="border-l-4 border-l-[#7FA88C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Patient Sex</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#7FA88C] bg-[#7FA88C]/15 px-2 py-0.5 rounded-full">From Patient Report</span>
+                </div>
                 <select
                   value={formData.patient_sex || ''}
                   onChange={(e) => handleFieldChange('patient_sex', e.target.value)}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#7FA88C] focus:outline-none"
                 >
                   <option value="">Select...</option>
                   <option value="Male">Male</option>
@@ -285,44 +240,60 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Medical Conditions</label>
+              {/* Medical Conditions - from report */}
+              <div className="border-l-4 border-l-[#7FA88C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Medical Conditions</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#7FA88C] bg-[#7FA88C]/15 px-2 py-0.5 rounded-full">From Patient Report</span>
+                </div>
                 <textarea
                   value={formData.patient_conditions?.join(', ') || ''}
                   onChange={(e) => handleFieldChange('patient_conditions', e.target.value.split(',').map(s => s.trim()))}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none min-h-20"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#7FA88C] focus:outline-none min-h-20"
                   placeholder="e.g., Hypertension, Diabetes"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Current Medications</label>
+              {/* Current Medications - from report */}
+              <div className="border-l-4 border-l-[#7FA88C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Current Medications</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#7FA88C] bg-[#7FA88C]/15 px-2 py-0.5 rounded-full">From Patient Report</span>
+                </div>
                 <textarea
                   value={formData.patient_current_meds?.join(', ') || ''}
                   onChange={(e) => handleFieldChange('patient_current_meds', e.target.value.split(',').map(s => s.trim()))}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none min-h-20"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#7FA88C] focus:outline-none min-h-20"
                   placeholder="e.g., Aspirin, Lisinopril"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Proposed Drug *</label>
+              {/* Proposed Drug - from prescription */}
+              <div className="border-l-4 border-l-[#C9A35C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Proposed Drug *</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#C9A35C] bg-[#C9A35C]/15 px-2 py-0.5 rounded-full">From Prescription</span>
+                </div>
                 <input
                   type="text"
                   value={formData.proposed_drug || ''}
                   onChange={(e) => handleFieldChange('proposed_drug', e.target.value)}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#C9A35C] focus:outline-none"
                   placeholder="e.g., Ibuprofen"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-text-warm-gray mb-2">Medical Indication</label>
+              {/* Medical Indication - from prescription */}
+              <div className="border-l-4 border-l-[#C9A35C] pl-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <label className="block text-sm font-semibold text-text-warm-gray">Medical Indication</label>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-[#C9A35C] bg-[#C9A35C]/15 px-2 py-0.5 rounded-full">From Prescription</span>
+                </div>
                 <input
                   type="text"
                   value={formData.illness_indication || ''}
                   onChange={(e) => handleFieldChange('illness_indication', e.target.value)}
-                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-teal-deep focus:outline-none"
+                  className="w-full bg-card-dark border border-text-warm-gray/20 rounded-lg px-4 py-2 text-text-off-white focus:border-[#C9A35C] focus:outline-none"
                   placeholder="e.g., Lower back pain"
                 />
               </div>
@@ -337,15 +308,17 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
                   setPrescription(null)
                   setEditMode(false)
                 }}
-                className="px-6 py-3 bg-card-dark hover:bg-card-dark/80 text-text-off-white font-semibold rounded-lg transition-colors border border-text-warm-gray/20"
+                className="px-6 py-3 bg-card-dark hover:bg-card-dark/80 text-text-off-white font-semibold rounded-lg transition-colors border border-text-warm-gray/20 flex items-center justify-center gap-2"
               >
-                ↺ Upload Different Files
+                <RotateCcw size={18} />
+                Upload Different Files
               </button>
               <button
                 onClick={handleConfirm}
-                className="px-6 py-3 bg-teal-deep hover:bg-teal-light text-white font-semibold rounded-lg transition-colors"
+                className="px-6 py-3 bg-gradient-to-r from-[#2d5d55] to-[#3a7068] hover:shadow-lg hover:shadow-[#7FA88C]/30 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
               >
-                ✓ Check Drug Interactions
+                <ShieldCheck size={18} />
+                Check Drug Interactions
               </button>
             </div>
           </motion.div>

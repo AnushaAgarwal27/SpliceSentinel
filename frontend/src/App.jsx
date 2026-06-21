@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
+import { Dna, Eye, Home } from 'lucide-react'
 import './App.css'
 
 import LandingPage from './components/LandingPage.jsx'
@@ -66,18 +67,18 @@ export default function App() {
         similar_cases_count: response.data.similar_cases?.length
       })
 
-      // Simulate progressive reveal (in real app, backend would stream)
+      // Show progress stages quickly (200ms each instead of 800ms)
       setProgress({ stage: 'signals' })
-      await new Promise(r => setTimeout(r, 800))
+      await new Promise(r => setTimeout(r, 200))
 
       setProgress({ stage: 'similar' })
-      await new Promise(r => setTimeout(r, 800))
+      await new Promise(r => setTimeout(r, 200))
 
       setProgress({ stage: 'narrative' })
-      await new Promise(r => setTimeout(r, 800))
+      await new Promise(r => setTimeout(r, 200))
 
       setProgress({ stage: 'note' })
-      await new Promise(r => setTimeout(r, 400))
+      await new Promise(r => setTimeout(r, 100))
 
       console.log('🟢 Setting results...')
       setResults(response.data)
@@ -103,6 +104,7 @@ export default function App() {
   if (!results && !loading) {
     return (
       <FileUploadPage
+        key="upload-form"
         onExtractedData={handleExtractedData}
         onBack={() => setShowLanding(true)}
         loading={loading}
@@ -114,37 +116,56 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg-dark">
       {/* Header */}
-      <header className="bg-card-dark text-white py-12 px-4 border-b border-teal-deep/30">
+      <header className="bg-card-dark text-white py-10 px-4 border-b border-teal-deep/30">
         <div className="max-w-6xl mx-auto flex justify-between items-start">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl font-serif font-light text-text-off-white mb-2">
-              🧬 Splice Sentinel
-            </h1>
-            <p className="text-lg text-text-warm-gray font-sans">
+            {/* Branded Logo */}
+            <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-teal-deep/20 to-gold-muted/20 border border-teal-deep/40 w-fit mb-3">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+              >
+                <Dna size={28} color="#0F4C45" strokeWidth={1.5} />
+              </motion.div>
+              <h1 className="text-3xl font-serif font-light text-text-off-white tracking-wide">
+                Splice Sentinel
+              </h1>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-sm text-text-warm-gray font-sans">
               Real FDA adverse event data to flag dangerous drug combinations
             </p>
           </motion.div>
-          <div className="flex gap-3">
-            <button
+
+          {/* Header Buttons */}
+          <div className="flex gap-2">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setShowProof(true)}
-              className="px-4 py-2 bg-text-warm-gray/20 hover:bg-text-warm-gray/30 text-text-off-white font-semibold rounded text-sm transition-colors border border-text-warm-gray/30 whitespace-nowrap"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-deep/30 hover:bg-teal-deep/40 text-text-off-white font-semibold text-sm rounded-lg transition-all border border-teal-deep/50 hover:border-teal-deep/70 whitespace-nowrap"
             >
-              ✅ Show Proof
-            </button>
-            <button
+              <Eye size={18} strokeWidth={2} />
+              Show Proof
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setShowLanding(true)
                 setResults(null)
                 setProgress({})
               }}
-              className="px-4 py-2 bg-text-warm-gray/20 hover:bg-text-warm-gray/30 text-text-off-white font-semibold rounded text-sm transition-colors border border-text-warm-gray/30 whitespace-nowrap"
+              className="flex items-center gap-2 px-4 py-2 bg-text-warm-gray/20 hover:bg-text-warm-gray/30 text-text-off-white font-semibold text-sm rounded-lg transition-all border border-text-warm-gray/30 hover:border-text-warm-gray/50 whitespace-nowrap"
             >
-              ← Back to Home
-            </button>
+              <Home size={18} strokeWidth={2} />
+              Back to Home
+            </motion.button>
           </div>
         </div>
       </header>
@@ -263,6 +284,8 @@ export default function App() {
                 onClick={() => {
                   setResults(null)
                   setProgress({})
+                  setLoading(false)
+                  setError(null)
                 }}
                 className="w-full py-3 bg-teal-deep hover:bg-teal-light text-white font-semibold rounded-lg transition"
               >
