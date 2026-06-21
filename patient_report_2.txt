@@ -1,0 +1,32 @@
+CARDIOLOGY CONSULT - DYSPNEA AND CARDIAC EVALUATION
+Sample Name: Shortness of Breath Workup - Ms. A
+
+HISTORY OF PRESENT ILLNESS: Ms. A is a 55-year-old female presenting to the Cardiology Service with complaints of shortness of breath on exertion that has worsened over the past 6 months. She reports dyspnea when climbing stairs or walking more than one block, which significantly limits her daily activities. The patient also reports occasional palpitations and denies orthopnea or paroxysmal nocturnal dyspnea at this time. She notes bilateral ankle swelling that worsens by evening. The patient has a significant past medical history of hypertension for which she is on multiple medications. She also has hypercholesterolemia. Notable family history includes father who passed away from congestive heart failure. Given her obesity (BMI 46) and sedentary lifestyle, she is at increased cardiovascular risk.
+
+PAST MEDICAL HISTORY: Hypertension managed with Norvasc and Lopressor. Hypercholesterolemia treated with lovastatin. History of deep vein thrombosis prior to hysterectomy in 1994. Depression managed with citalopram. Obesity with BMI 46. Patient reports prior episode of tachycardia but denies formal diagnosis of arrhythmia.
+
+MEDICATIONS: Norvasc 10 mg p.o. daily, Lopressor tartrate 50 mg p.o. b.i.d., lovastatin 10 mg p.o. at bedtime, citalopram 10 mg p.o. daily, aspirin 500 mg three times daily (currently stopped), vitamin D, Premarin 0.3 mg one tablet p.o. daily (currently stopped), omega-3 fatty acids, vitamin D 50,000 units q. weekly.
+
+ALLERGIES: Patient denies allergies to medications and latex.
+
+SOCIAL HISTORY: Homemaker, married with 2 children. Lifelong nonsmoker and nondrinker. Sedentary lifestyle due to weight and joint pain.
+
+FAMILY HISTORY: Father died from congestive heart failure at age 68. Mother has hypertension and diabetes. Father had history of myocardial infarction at age 62. Two brothers, one deceased from brain cancer.
+
+REVIEW OF SYSTEMS: Significant for dyspnea on exertion, bilateral ankle edema, and occasional palpitations. Denies chest pain, syncope, or presyncope. No orthopnea or PND. Denies hemoptysis. Reports fatigue and exercise intolerance. No fever, chills, or recent infections. Reports continued weight-bearing joint pain. Vision corrected with glasses. Denies neurological symptoms.
+
+PHYSICAL EXAMINATION: Vital Signs: BP 148/92 (elevated), HR 92 (regular), RR 18, O2 saturation 96% on room air. General: Well-nourished, obese female, no acute distress at rest. HEENT: Pupils equal and reactive. JVD not appreciated. Lungs: Clear to auscultation bilaterally without crackles or wheezes. Cardiac: Regular rate and rhythm, no murmurs, rubs, or gallops appreciated. S1 and S2 normal. Abdomen: Soft, obese, nondistended, nontender. Extremities: 2+ bilateral ankle edema, symmetric. Dorsalis pedis pulses 2+ bilaterally. No calf tenderness. Lower extremity duplex ultrasound ordered to rule out DVT recurrence.
+
+ASSESSMENT: Ms. A is a 55-year-old obese female with multiple cardiovascular risk factors including hypertension, hypercholesterolemia, obesity, and significant family history of early cardiac death presenting with progressive dyspnea on exertion. Physical examination reveals elevated blood pressure and bilateral lower extremity edema concerning for possible cardiac or venous etiology. Differential diagnosis includes decompensated heart failure, pulmonary hypertension, or recurrent venous thromboembolism.
+
+PLAN: Obtain electrocardiogram and transthoracic echocardiogram to assess cardiac function and rule out structural heart disease. Order lower extremity duplex ultrasound to rule out recurrent DVT. Check BNP level to assess for heart failure. Continue current antihypertensive regimen; may need optimization of blood pressure control. Consider cardiology follow-up after imaging studies. Patient counseled on weight loss benefits and cardiovascular risk reduction. Recommend stress test after initial workup. Patient to be evaluated for possible addition of diuretic therapy if heart failure suspected. Advised to monitor for worsening dyspnea, chest pain, or syncope and seek emergency care if symptoms develop.
+
+IMAGING/LABS ORDERED:
+- EKG
+- Transthoracic echocardiogram
+- Lower extremity duplex ultrasound
+- BNP level
+- Complete metabolic panel
+- Lipid panel
+
+FOLLOW-UP: Patient to return in 2 weeks after imaging studies are complete for result discussion and further management planning.

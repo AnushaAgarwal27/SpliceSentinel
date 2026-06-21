@@ -1,0 +1,43 @@
+PRESCRIPTION FORM
+
+Patient Name: [Generic Template - Test Case]
+Date: June 21, 2026
+Prescriber: Dr. James Mitchell, MD
+License: MD-2847391
+
+===========================================
+PRESCRIBED MEDICATION:
+
+Drug Name: NAPROXEN (Aleve, Naprosyn)
+Strength: 500 mg
+Form: Oral Tablet
+Quantity: 30 tablets
+Frequency: One tablet twice daily with food
+Duration: For 30 days
+Refills: 2 authorized
+
+Indication: Chronic pain management, anti-inflammatory therapy
+Special Instructions: Take with food to minimize GI upset. Do not exceed 1000 mg per day without physician supervision.
+
+===========================================
+PATIENT ALLERGIES:
+[No known drug allergies per patient report]
+
+CONTRAINDICATIONS TO VERIFY:
+- Current GI medications (omeprazole, aspirin)
+- Cardiovascular medications (Norvasc, Lopressor)
+- Diabetes medications (metformin)
+
+MONITORING REQUIRED:
+- Renal function (BUN, creatinine)
+- Liver function tests
+- Blood pressure monitoring
+- GI tolerance (watch for heartburn, ulcers)
+
+===========================================
+Signature: ___________________________
+Dr. James Mitchell, MD
+Phone: (555) 123-4567
+Fax: (555) 123-4568
+
+Date Issued: June 21, 2026

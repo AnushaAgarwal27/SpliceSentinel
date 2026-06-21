@@ -241,7 +241,7 @@ async def debug_sentry_test():
 
 @app.post("/api/extract-patient-data")
 async def extract_patient_data(
-    patient_report: UploadFile = File(...),
+    patient_report: List[UploadFile] = File(...),
     prescription: UploadFile = File(...)
 ):
     """
@@ -250,37 +250,53 @@ async def extract_patient_data(
     Uses Claude AI to parse medical reports and prescriptions.
     """
     try:
+        if not patient_report:
+            raise HTTPException(status_code=400, detail="At least one patient report is required")
+
         # Save uploaded files temporarily with correct file extensions
-        # Get file extensions from original filenames
-        report_ext = os.path.splitext(patient_report.filename)[1] or '.txt'
+        report_paths = []
         prescription_ext = os.path.splitext(prescription.filename)[1] or '.txt'
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=report_ext) as report_file:
-            content = await patient_report.read()
-            report_file.write(content)
-            report_path = report_file.name
+        for report in patient_report:
+            report_ext = os.path.splitext(report.filename)[1] or '.txt'
+            with tempfile.NamedTemporaryFile(delete=False, suffix=report_ext) as report_file:
+                content = await report.read()
+                report_file.write(content)
+                report_file.flush()
+                os.fsync(report_file.fileno())
+                report_paths.append((report_file.name, report.filename or "patient_report", report_ext))
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=prescription_ext) as prescription_file:
             content = await prescription.read()
             prescription_file.write(content)
+            prescription_file.flush()
+            os.fsync(prescription_file.fileno())
             prescription_path = prescription_file.name
 
-        print(f"💾 Saved temp files: {report_path} ({report_ext}), {prescription_path} ({prescription_ext})")
+        print(f"💾 Saved {len(report_paths)} patient report temp file(s), prescription: {prescription_path} ({prescription_ext})")
 
         # Extract text from files
         from services.document_parser import extract_text_from_file
 
-        patient_report_text = extract_text_from_file(report_path)
+        patient_report_sections = []
+        for index, (report_path, original_name, _report_ext) in enumerate(report_paths, 1):
+            report_text = extract_text_from_file(report_path)
+            patient_report_sections.append(
+                f"--- Patient report {index}: {original_name} ---\n{report_text}"
+            )
+
+        patient_report_text = "\n\n".join(patient_report_sections)
         prescription_text = extract_text_from_file(prescription_path)
 
-        print(f"📄 Extracted patient report: {len(patient_report_text)} chars")
+        print(f"📄 Extracted {len(report_paths)} patient report(s): {len(patient_report_text)} chars total")
         print(f"📄 Extracted prescription: {len(prescription_text)} chars")
 
         # Parse with Claude
         parsed = parse_patient_data_with_claude(patient_report_text, prescription_text)
 
         # Clean up temp files
-        os.unlink(report_path)
+        for report_path, _original_name, _report_ext in report_paths:
+            os.unlink(report_path)
         os.unlink(prescription_path)
 
         return {
