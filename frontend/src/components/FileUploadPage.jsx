@@ -41,6 +41,7 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
   const [formData, setFormData] = useState({})
   const [dragActive, setDragActive] = useState(null)
 
+
   useEffect(() => {
     // Reset form completely when coming back to upload another combination
     if (parentResults === null && !parentLoading) {

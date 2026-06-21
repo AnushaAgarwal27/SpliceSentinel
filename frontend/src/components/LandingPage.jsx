@@ -1,20 +1,7 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import GoogleGeminiEffectDemo from '@/components/ui/google-gemini-effect-demo'
-import FileUploadPage from '@/components/FileUploadPage'
 
 export default function LandingPage({ onGetStarted }) {
-  const [showUpload, setShowUpload] = useState(false)
-
-  if (showUpload) {
-    return (
-      <FileUploadPage
-        onExtractedData={onGetStarted}
-        onBack={() => setShowUpload(false)}
-      />
-    )
-  }
-
   return (
     <div className="bg-bg-dark w-full relative">
       <GoogleGeminiEffectDemo />
@@ -27,7 +14,7 @@ export default function LandingPage({ onGetStarted }) {
           transition={{ delay: 0.8 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setShowUpload(true)}
+          onClick={onGetStarted}
           className="inline-flex items-center gap-2 rounded px-8 py-3 text-base font-sans font-medium text-white shadow-xl hover:shadow-2xl transition-all border border-gold-muted/30 bg-teal-deep hover:bg-teal-light"
         >
           Get Started

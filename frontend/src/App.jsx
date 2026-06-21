@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import { Dna, Eye, Home } from 'lucide-react'
@@ -21,14 +21,19 @@ export default function App() {
   const [error, setError] = useState(null)
   const [progress, setProgress] = useState({})
   const [showProof, setShowProof] = useState(false)
+  const performingCheckRef = useRef(false)
 
   const handleExtractedData = async (data) => {
-    console.log('🟢 handleExtractedData called with:', data)
     await performDrugCheck(data)
   }
 
   const performDrugCheck = async (patientData) => {
-    console.log('🔵 performDrugCheck started with:', patientData)
+    // Prevent double-execution from React.StrictMode in development
+    if (performingCheckRef.current) {
+      return
+    }
+    performingCheckRef.current = true
+
     setLoading(true)
     setError(null)
     setResults(null)
@@ -37,20 +42,10 @@ export default function App() {
     try {
       // Show query progress
       setProgress({ stage: 'querying' })
-      console.log('🟡 Querying openFDA...')
 
       const currentMeds = Array.isArray(patientData.patient_current_meds)
         ? patientData.patient_current_meds
         : patientData.patient_current_meds?.split(',').map(s => s.trim()).filter(s => s) || []
-
-      console.log('📋 Request data:', {
-        drug_a: patientData.proposed_drug,
-        drug_b: currentMeds[0],
-        patient_age: patientData.patient_age,
-        patient_sex: patientData.patient_sex,
-        conditions_count: (patientData.patient_conditions || []).length,
-        meds_count: currentMeds.length
-      })
 
       const response = await axios.post('/api/check-combination', {
         drug_a: patientData.proposed_drug || 'unknown',
@@ -59,12 +54,6 @@ export default function App() {
         patient_sex: patientData.patient_sex,
         patient_conditions: Array.isArray(patientData.patient_conditions) ? patientData.patient_conditions : [],
         patient_current_meds: currentMeds,
-      })
-
-      console.log('✅ API response received:', {
-        combo_total: response.data.combo_total,
-        signals_count: response.data.signals?.length,
-        similar_cases_count: response.data.similar_cases?.length
       })
 
       // Show progress stages quickly (200ms each instead of 800ms)
@@ -80,10 +69,8 @@ export default function App() {
       setProgress({ stage: 'note' })
       await new Promise(r => setTimeout(r, 100))
 
-      console.log('🟢 Setting results...')
       setResults(response.data)
       setPatientData(patientData)
-      console.log('🟢 Results set successfully')
       setProgress({ stage: 'complete' })
     } catch (err) {
       setError(
@@ -93,6 +80,7 @@ export default function App() {
       console.error(err)
     } finally {
       setLoading(false)
+      performingCheckRef.current = false
     }
   }
 
