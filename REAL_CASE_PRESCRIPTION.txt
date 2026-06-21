@@ -1,0 +1,67 @@
+PHYSICIAN'S PRESCRIPTION
+========================
+
+Date: June 20, 2026
+Patient Name: Robert J. Anderson (Anonymized)
+Patient ID: MR-20260620-A
+Date of Birth: 1967-11-12 (Age: 57)
+
+Prescribing Physician:
+Dr. Sarah Mitchell, MD
+Internal Medicine & Cardiology
+License #: MD-457821
+Phone: (555) 123-4567
+
+═══════════════════════════════════════════════════════════════
+
+PRESCRIPTION 1:
+Drug Name: IBUPROFEN (Nonsteroidal Anti-inflammatory Drug)
+Form: Tablet
+Strength: 400 mg
+Dosage Instructions: One tablet by mouth every 6 hours with food as needed for pain and fever
+Quantity: 40 tablets
+Refills: 0
+Duration: 10 days
+
+Indication:
+- Post-pneumonitis pain management
+- Residual fever control during recovery
+- Anti-inflammatory support for airway healing
+
+Clinical Rationale:
+Patient has recovered from acute pneumonitis but continues to experience:
+- Mild fever (low-grade 99-100°F in afternoons)
+- Musculoskeletal pain from coughing strain
+- Malaise
+
+Conservative management with Acetaminophen alone insufficient. NSAID therapy
+appropriate for symptomatic relief and inflammation reduction.
+
+Special Instructions:
+- TAKE WITH FOOD to minimize GI upset
+- Do not exceed 1600 mg daily (max 4 tablets per day)
+- Stop immediately if any signs of bleeding: dark stool, blood in urine, bruising
+- DO NOT take with Aspirin or other NSAIDs
+- DO NOT take extra dose if one is missed
+
+CRITICAL SAFETY NOTE:
+⚠️ Patient is on Warfarin for anticoagulation. NSAID use increases:
+  • Bleeding risk (GI hemorrhage)
+  • INR elevation risk
+  • Drug-drug interaction potential
+
+Recommend: INR check in 3-5 days after starting therapy
+Patient education: Warning signs of bleeding complications
+Consider: Gastroprotection with proton pump inhibitor if bleeding risk elevated
+
+═══════════════════════════════════════════════════════════════
+
+ADDITIONAL NOTES:
+- Patient allergic to Penicillin class (noted: Ceftriaxone used as alternative for pneumonia)
+- CVA prevention critical - maintain anticoagulation
+- Pneumonitis almost resolved - typical 2-3 week recovery for symptoms
+- Monitor for aspiration risk given recent lung infection
+
+Physician Signature: Dr. Sarah Mitchell, MD
+Date Signed: June 20, 2026
+NPI: 1234567890

@@ -1,0 +1,71 @@
+PHYSICIAN'S PRESCRIPTION
+========================
+
+Date: June 20, 2026
+Patient Name: John Smith (Anonymized)
+Patient ID: MR-20260620
+Date of Birth: 1959-03-15 (Age: 67)
+
+Prescribing Physician:
+Dr. Robert Johnson, MD
+Internal Medicine
+License #: MD-123456
+
+═══════════════════════════════════════════════════════════════
+
+PRESCRIPTION 1:
+Drug Name: IBUPROFEN (Nonsteroidal Anti-inflammatory Drug)
+Form: Tablet
+Strength: 400 mg
+Dosage Instructions: One tablet by mouth three times daily with food
+Quantity: 90 tablets
+Refills: 2
+Duration: For chronic back pain
+
+Indication: Lower back pain secondary to degenerative disc disease at L4-L5
+
+Clinical Rationale:
+Patient has failed conservative management with acetaminophen monotherapy.
+Requires stronger NSAID therapy for anti-inflammatory effect to address
+degenerative joint disease and associated inflammation. NSAIDs are standard
+of care for this indication.
+
+Special Instructions:
+- Take with food to minimize GI upset
+- Do not exceed 1200 mg per day
+- Use lowest effective dose for shortest duration
+- Report any signs of bleeding or GI symptoms immediately
+
+═══════════════════════════════════════════════════════════════
+
+PATIENT ALLERGIES NOTED:
+- Penicillin (rash)
+- Aspirin (GI upset) ⚠️ [NSAID allergy history - use caution]
+
+CURRENT MEDICATION LIST REVIEWED:
+The following medications are in patient's current profile:
+1. Warfarin 5mg daily ⚠️ [ANTICOAGULANT - INTERACTION POSSIBLE]
+2. Metoprolol 50mg BID
+3. Lisinopril 10mg daily
+4. Metformin 1000mg BID
+5. Atorvastatin 40mg daily
+
+═══════════════════════════════════════════════════════════════
+
+SIGNATURE SECTION:
+Prescriber Signature: [Digital Signature - June 20, 2026]
+DEA License: [Not required for non-controlled]
+Pharmacy License: [Pharmacist may verify]
+
+NOTES FROM PRESCRIBER:
+This is a high-risk prescription. Patient is on Warfarin for
+atrial fibrillation anticoagulation. NSAIDs can increase bleeding risk
+and reduce Warfarin efficacy. Close monitoring of INR recommended.
+Alternative pain management should be considered if possible.
+
+However, given failed conservative management and patient's quality of
+life concerns, benefits may outweigh risks with careful monitoring.
+
+═══════════════════════════════════════════════════════════════
+Prescription generated digitally by secure prescribing system
+For Questions: Contact Dr. Johnson at (555) 123-4567

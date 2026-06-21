@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -21,32 +20,4 @@
   to {
     opacity: 1;
   }
-}
-
-/* Smooth transitions */
-* {
-  @apply transition-colors;
-}
-
-/* Form inputs */
-input, select, textarea {
-  @apply font-inherit;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-slate-100;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-400 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-600;
 }

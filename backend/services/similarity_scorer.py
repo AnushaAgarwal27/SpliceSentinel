@@ -33,13 +33,14 @@ def calculate_age_similarity(patient_age: int, case_age: int) -> float:
     if patient_age is None or case_age is None:
         return 0.5  # Neutral if not provided
 
-    # Convert to int if string
+    # Convert both to int (FAERS returns age as string)
     try:
-        case_age = int(case_age) if isinstance(case_age, str) else case_age
+        patient_age_int = int(patient_age) if isinstance(patient_age, str) else patient_age
+        case_age_int = int(case_age) if isinstance(case_age, str) else case_age
     except (ValueError, TypeError):
         return 0.5
 
-    age_diff = abs(patient_age - case_age)
+    age_diff = abs(patient_age_int - case_age_int)
 
     if age_diff <= 1:
         return 1.0
@@ -59,13 +60,34 @@ def calculate_sex_similarity(patient_sex: Optional[str], case_sex: Optional[str]
     - Match: 1.0 (100%)
     - Mismatch: 0.0
     - Either missing: 0.5 (neutral)
+
+    Handles:
+    - Patient sex: "Male", "Female", "Other" (strings)
+    - FAERS sex: "1" (Male), "2" (Female), "M", "F" (codes)
     """
     if patient_sex is None or case_sex is None:
         return 0.5
 
-    if patient_sex.upper() == case_sex.upper():
-        return 1.0
-    return 0.0
+    # Normalize patient sex
+    patient_sex_normalized = patient_sex.upper()[0] if patient_sex else None
+
+    # Normalize case sex (handle FAERS codes)
+    case_sex_str = str(case_sex).strip().upper()
+    if case_sex_str in ('1', 'M'):
+        case_sex_normalized = 'M'
+    elif case_sex_str in ('2', 'F'):
+        case_sex_normalized = 'F'
+    elif case_sex_str in ('OTHER', 'O'):
+        case_sex_normalized = 'O'
+    else:
+        case_sex_normalized = case_sex_str[0] if case_sex_str else None
+
+    if patient_sex_normalized and case_sex_normalized:
+        if patient_sex_normalized == case_sex_normalized:
+            return 1.0
+        return 0.0
+
+    return 0.5
 
 
 def calculate_condition_overlap(
@@ -75,16 +97,33 @@ def calculate_condition_overlap(
     """
     Calculate condition/indication overlap.
 
+    IMPORTANT: FAERS data doesn't reliably store patient conditions,
+    only drug indications which are often empty or generic.
+    This function tries to match but gracefully handles missing data.
+
     Scoring:
     - # matching conditions / max(patient conditions, case indications)
     - E.g., patient has [HTN, DM], case has [HTN, stroke] = 1/2 = 0.5 (50%)
+    - If case has no useful indications → return 0.5 (neutral, don't penalize)
     """
-    if not patient_conditions or not case_indications:
-        return 0.5  # Neutral if not provided
+    if not patient_conditions:
+        return 0.6  # No patient conditions provided - slightly favor neutral (FAERS often lacks this)
+
+    if not case_indications:
+        return 0.6  # Case has no indications (common in FAERS) - neutral, don't penalize
+
+    # Filter out generic/useless indications
+    useful_indications = [
+        i for i in case_indications
+        if i and 'unknown' not in i.lower() and len(i.strip()) > 3
+    ]
+
+    if not useful_indications:
+        return 0.5  # No useful indications in case - neutral, don't penalize
 
     # Convert to lowercase for comparison
     patient_conds = [c.lower().strip() for c in patient_conditions]
-    case_inds = [i.lower().strip() for i in case_indications]
+    case_inds = [i.lower().strip() for i in useful_indications]
 
     # Find overlaps
     matches = len(set(patient_conds) & set(case_inds))
@@ -138,23 +177,28 @@ def calculate_overall_similarity(
     """
     Calculate overall similarity score (0-100%).
 
-    Weighted components:
-    - Age: 25%
-    - Sex: 15%
-    - Conditions/Indications: 35%
-    - Current Medications: 25%
+    FAERS-optimized weighted components:
+    - Age: 20% (converted from string to int for comparison)
+    - Sex: 15% (converted from code 1/2 to M/F)
+    - Conditions/Indications: 20% (FAERS often lacks this, uses neutral 0.5 if missing)
+    - Current Medications: 45% (most reliable field in FAERS data)
+
+    Increased med weight because FAERS consistently has drug names,
+    but inconsistently has patient conditions/indications.
     """
     age_score = calculate_age_similarity(patient_age, case_age)
     sex_score = calculate_sex_similarity(patient_sex, case_sex)
     condition_score = calculate_condition_overlap(patient_conditions or [], case_indications or [])
     med_score = calculate_medication_overlap(patient_current_meds or [], case_meds or [])
 
-    # Weighted average
+    print(f"[SIMILARITY DEBUG] age={age_score:.2f} sex={sex_score:.2f} cond={condition_score:.2f} meds={med_score:.2f}")
+
+    # Weighted average (adjusted for FAERS data reliability)
     overall = (
-        age_score * 0.25 +
+        age_score * 0.20 +
         sex_score * 0.15 +
-        condition_score * 0.35 +
-        med_score * 0.25
+        condition_score * 0.20 +
+        med_score * 0.45
     )
 
     return overall * 100  # Convert to percentage
@@ -239,7 +283,7 @@ def find_similar_cases(
     patient_current_meds: Optional[List[str]],
     faers_reports: List[Dict],
     top_n: int = 5,
-    min_similarity: float = 0.3
+    min_similarity: float = 0.2  # Lowered from 0.3 to get more results with limited FAERS data
 ) -> List[Dict]:
     """
     Find most similar patients in FAERS reports.

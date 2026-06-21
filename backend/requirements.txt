@@ -6,3 +6,8 @@ python-dotenv==1.0.0
 pydantic==2.5.0
 arize-phoenix==1.3.0
 openinference-instrumentation-anthropic==0.1.16
+opentelemetry-api==1.21.0
+opentelemetry-sdk==1.21.0
+opentelemetry-exporter-otlp==0.42b0
+PyPDF2==4.0.1
+python-multipart==0.0.6

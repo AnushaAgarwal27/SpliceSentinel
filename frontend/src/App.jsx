@@ -3,20 +3,30 @@ import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import './App.css'
 
-import CheckForm from './components/CheckForm'
+import LandingPage from './components/LandingPage.jsx'
+import FileUploadPage from './components/FileUploadPage'
 import QueryProgress from './components/QueryProgress'
-import SignalResults from './components/SignalResults'
+import AnalysisSummary from './components/AnalysisSummary'
 import SimilarCases from './components/SimilarCases'
 import NarrativeSummary from './components/NarrativeSummary'
 import ClinicalNote from './components/ClinicalNote'
+import ProofPage from './components/ProofPage'
 
 export default function App() {
+  const [showLanding, setShowLanding] = useState(true)
   const [results, setResults] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [progress, setProgress] = useState({})
+  const [showProof, setShowProof] = useState(false)
 
-  const handleCheck = async (formData) => {
+  const handleExtractedData = async (data) => {
+    console.log('🟢 handleExtractedData called with:', data)
+    await performDrugCheck(data)
+  }
+
+  const performDrugCheck = async (patientData) => {
+    console.log('🔵 performDrugCheck started with:', patientData)
     setLoading(true)
     setError(null)
     setResults(null)
@@ -25,14 +35,34 @@ export default function App() {
     try {
       // Show query progress
       setProgress({ stage: 'querying' })
+      console.log('🟡 Querying openFDA...')
 
-      const response = await axios.post('http://localhost:8000/api/check-combination', {
-        drug_a: formData.drugA,
-        drug_b: formData.drugB,
-        patient_age: formData.patientAge ? parseInt(formData.patientAge) : null,
-        patient_sex: formData.patientSex || null,
-        patient_conditions: formData.patientConditions || null,
-        patient_current_meds: formData.patientCurrentMeds || null,
+      const currentMeds = Array.isArray(patientData.patient_current_meds)
+        ? patientData.patient_current_meds
+        : patientData.patient_current_meds?.split(',').map(s => s.trim()).filter(s => s) || []
+
+      console.log('📋 Request data:', {
+        drug_a: patientData.proposed_drug,
+        drug_b: currentMeds[0],
+        patient_age: patientData.patient_age,
+        patient_sex: patientData.patient_sex,
+        conditions_count: (patientData.patient_conditions || []).length,
+        meds_count: currentMeds.length
+      })
+
+      const response = await axios.post('/api/check-combination', {
+        drug_a: patientData.proposed_drug || 'unknown',
+        drug_b: currentMeds[0] || 'unknown',
+        patient_age: patientData.patient_age,
+        patient_sex: patientData.patient_sex,
+        patient_conditions: Array.isArray(patientData.patient_conditions) ? patientData.patient_conditions : [],
+        patient_current_meds: currentMeds,
+      })
+
+      console.log('✅ API response received:', {
+        combo_total: response.data.combo_total,
+        signals_count: response.data.signals?.length,
+        similar_cases_count: response.data.similar_cases?.length
       })
 
       // Simulate progressive reveal (in real app, backend would stream)
@@ -48,7 +78,9 @@ export default function App() {
       setProgress({ stage: 'note' })
       await new Promise(r => setTimeout(r, 400))
 
+      console.log('🟢 Setting results...')
       setResults(response.data)
+      console.log('🟢 Results set successfully')
       setProgress({ stage: 'complete' })
     } catch (err) {
       setError(
@@ -61,11 +93,27 @@ export default function App() {
     }
   }
 
+  if (showLanding) {
+    return <LandingPage onGetStarted={() => setShowLanding(false)} />
+  }
+
+  // If no results, show the upload form
+  if (!results && !loading) {
+    return (
+      <FileUploadPage
+        onExtractedData={handleExtractedData}
+        onBack={() => setShowLanding(true)}
+        loading={loading}
+        results={results}
+      />
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <header className="bg-gradient-to-r from-primary to-secondary text-white py-12 px-4 shadow-lg">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto flex justify-between items-start">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -78,16 +126,53 @@ export default function App() {
               Real FDA adverse event data to flag dangerous drug combinations
             </p>
           </motion.div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowProof(true)}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                padding: '10px 16px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+            >
+              ✅ Show Proof
+            </button>
+            <button
+              onClick={() => {
+                setShowLanding(true)
+                setResults(null)
+                setProgress({})
+              }}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                padding: '10px 16px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+            >
+              ← Back to Home
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
-        {/* Form Section */}
-        {!results && (
-          <CheckForm onSubmit={handleCheck} disabled={loading} />
-        )}
-
         {/* Error Display */}
         <AnimatePresence>
           {error && (
@@ -123,12 +208,18 @@ export default function App() {
               transition={{ duration: 0.4 }}
               className="space-y-6"
             >
-              {/* Signal Results */}
-              <SignalResults results={results} />
+              {/* Analysis Summary - Main Results Display */}
+              <AnalysisSummary results={results} />
 
               {/* Similar Cases */}
               {results.similar_cases && results.similar_cases.length > 0 && (
-                <SimilarCases cases={results.similar_cases} />
+                <SimilarCases
+                  cases={results.similar_cases}
+                  signals={results.signals}
+                  combo_total={results.combo_total}
+                  drug_a={results.drug_a}
+                  drug_b={results.drug_b}
+                />
               )}
 
               {/* Narrative Summary */}
@@ -166,6 +257,18 @@ export default function App() {
           <p className="mt-2 text-xs opacity-70">For hackathon demo purposes</p>
         </div>
       </footer>
+
+      {/* Proof Modal */}
+      {showProof && results && (
+        <ProofPage
+          onClose={() => setShowProof(false)}
+          drug_a={results.drug_a}
+          drug_b={results.drug_b}
+        />
+      )}
+      {showProof && !results && (
+        <ProofPage onClose={() => setShowProof(false)} />
+      )}
     </div>
   )
 }

@@ -1,7 +1,12 @@
 import { motion } from 'framer-motion'
 
-export default function SimilarCases({ cases }) {
+export default function SimilarCases({ cases, signals, combo_total, drug_a, drug_b }) {
   if (!cases || cases.length === 0) return null
+
+  const topSignal = signals?.[0]
+  const avgSimilarity = cases.length > 0
+    ? Math.round(cases.reduce((sum, c) => sum + c.similarity_score, 0) / cases.length)
+    : 0
 
   return (
     <motion.div
@@ -11,11 +16,40 @@ export default function SimilarCases({ cases }) {
       className="bg-white rounded-xl shadow-lg p-8"
     >
       <h3 className="text-2xl font-bold text-slate-800 mb-8">
-        👥 Similar Patient Cases from FAERS
+        👥 Similar Patient Cases in FDA Data
       </h3>
 
+      {/* Statistical Summary */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.45 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-6 bg-slate-50 rounded-lg"
+      >
+        <div>
+          <p className="text-xs text-slate-500 uppercase font-semibold mb-1">FDA Reports</p>
+          <p className="text-2xl font-bold text-slate-800">{combo_total || 0}</p>
+          <p className="text-xs text-slate-600">{drug_a} + {drug_b}</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Flagged Reaction</p>
+          <p className="text-lg font-bold text-danger">{topSignal?.reaction.split(' ')[0] || 'N/A'}</p>
+          <p className="text-xs text-slate-600">{topSignal?.prr_vs_drug_a?.toFixed(1)}× higher risk</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Similar Cases Found</p>
+          <p className="text-2xl font-bold text-primary">{cases.length}</p>
+          <p className="text-xs text-slate-600">matched profiles</p>
+        </div>
+        <div>
+          <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Avg. Similarity</p>
+          <p className="text-2xl font-bold text-success">{avgSimilarity}%</p>
+          <p className="text-xs text-slate-600">to your patient</p>
+        </div>
+      </motion.div>
+
       <p className="text-slate-600 mb-6">
-        Real patients with similar profiles who took this drug combination:
+        Real patients with profiles similar to yours who took this drug combination and reported adverse events:
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

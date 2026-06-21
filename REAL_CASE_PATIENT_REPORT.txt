@@ -1,0 +1,68 @@
+PATIENT MEDICAL REPORT
+======================
+
+PATIENT INFORMATION:
+Name: Robert J. Anderson (Anonymized)
+Age: 57 years old
+Sex: Male
+Date of Birth: 1967-11-12
+Medical Record Number: MR-20260620-A
+Hospital: St. Mary's Medical Center
+
+CHIEF COMPLAINT:
+Follow-up evaluation for cerebrovascular accident (CVA) prevention and recent respiratory infection recovery.
+
+MEDICAL HISTORY:
+- Cerebrovascular Accident (CVA) History - Prior stroke risk (diagnosed 2019)
+- Hypertension (diagnosed 2010)
+- Pneumonitis (acute, currently resolving - diagnosed June 2026)
+- Hyperpyrexia (recent fever episodes during pneumonia - June 2026)
+- Hyperlipidemia
+
+CURRENT MEDICATIONS:
+1. Warfarin 5mg daily (Anticoagulation for CVA prevention)
+2. Amlodipine 5mg daily (for Hypertension - Brand: Norvasc)
+3. Furosemide 40mg daily (for fluid management)
+4. Spironolactone 25mg daily (for electrolyte balance)
+5. Bisoprolol 5mg daily (for cardiac rate control)
+6. Pravastatin 40mg daily (for cholesterol)
+
+ALLERGIES:
+- Penicillin class antibiotics (cross-reactivity risk noted)
+
+RECENT VITAL SIGNS (June 20, 2026):
+- Blood Pressure: 152/94 mmHg (slightly elevated)
+- Heart Rate: 78 bpm (regular)
+- Temperature: 98.6°F (normal - recovering from fever)
+- Respiratory Rate: 16/min
+- Weight: 82 kg
+
+LABORATORY RESULTS (June 2026):
+- INR: 2.1 (therapeutic on Warfarin) - IMPORTANT: Stable, within therapeutic range
+- Hemoglobin: 13.2 g/dL
+- Creatinine: 1.0 mg/dL
+- Prothrombin Time (PT): 22 seconds
+- WBC: 8.5 (elevated during pneumonia, normalizing)
+
+CHEST X-RAY (June 15, 2026):
+- Findings consistent with resolving pneumonitis
+- Infiltrates improving with antibiotic therapy
+- No pneumothorax
+
+CLINICAL NOTES:
+Patient recovering well from acute pneumonitis treated with Ceftriaxone IV.
+Fever has resolved (was 104.2°F at presentation, now normal).
+Hemodynamically stable.
+On prophylactic anticoagulation for stroke prevention due to CVA history.
+Bleeding risk must be carefully monitored given anticoagulation status.
+
+PHYSICAL EXAMINATION:
+- Alert and oriented
+- Lungs: Clear to auscultation bilaterally
+- No signs of bleeding or bruising
+- No edema
+- Peripheral pulses intact
+
+ASSESSMENT:
+57-year-old male with history of CVA, recovering from pneumonitis, on chronic anticoagulation with stable INR.
+Ready for discharge with close outpatient follow-up.

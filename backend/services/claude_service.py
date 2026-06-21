@@ -12,8 +12,9 @@ Two functions:
 
 from anthropic import Anthropic
 from typing import List, Dict
-from config import ANTHROPIC_API_KEY
+import os
 
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
@@ -79,7 +80,7 @@ Be honest about data limitations. Do NOT invent details that aren't present in t
 Keep your response to 3-4 sentences maximum."""
 
     message = client.messages.create(
-        model="claude-opus-4-1-20250805",
+        model="claude-opus-4-7",
         max_tokens=300,
         messages=[
             {
@@ -164,7 +165,7 @@ Example: Drug interaction review conducted. Reviewed {drug_a} and {drug_b} combi
 Generate the note now:"""
 
     message = client.messages.create(
-        model="claude-opus-4-1-20250805",
+        model="claude-opus-4-7",
         max_tokens=250,
         messages=[
             {

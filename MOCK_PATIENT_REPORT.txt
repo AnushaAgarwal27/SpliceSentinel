@@ -1,0 +1,66 @@
+PATIENT MEDICAL REPORT
+======================
+
+PATIENT INFORMATION:
+Name: John Smith (Anonymized)
+Age: 67 years old
+Sex: Male
+Date of Birth: 1959-03-15
+Medical Record Number: MR-20260620
+
+MEDICAL HISTORY:
+- Atrial Fibrillation (diagnosed 2015)
+- Hypertension (diagnosed 2010)
+- Type 2 Diabetes Mellitus (diagnosed 2012)
+- Hyperlipidemia
+- Previous myocardial infarction (2018)
+
+CURRENT MEDICATIONS:
+1. Warfarin 5mg daily (for AFib, anticoagulation)
+2. Metoprolol 50mg twice daily (for AFib rate control)
+3. Lisinopril 10mg daily (for hypertension)
+4. Metformin 1000mg twice daily (for diabetes)
+5. Atorvastatin 40mg daily (for cholesterol)
+
+ALLERGIES:
+- Penicillin (rash)
+- Aspirin (GI upset)
+
+RECENT VITAL SIGNS (June 20, 2026):
+- Blood Pressure: 148/92 mmHg
+- Heart Rate: 72 bpm (regular)
+- Weight: 85 kg
+- BMI: 28.5
+
+LABORATORY RESULTS (June 2026):
+- INR: 2.1 (therapeutic on Warfarin)
+- Hemoglobin A1C: 7.2%
+- Creatinine: 0.9 mg/dL
+- eGFR: 85 mL/min/1.73m2
+
+CHIEF COMPLAINT:
+Patient presents with chronic lower back pain, predominantly in the lumbar region.
+
+PAIN ASSESSMENT:
+- Onset: 3 months ago
+- Character: Sharp, burning
+- Severity: 6/10 at rest, 8/10 with activity
+- Location: L4-L5 region bilaterally
+- Aggravating factors: Prolonged sitting, bending, heavy lifting
+- Alleviating factors: Rest, heat application
+
+IMAGING STUDIES:
+- MRI Lumbar Spine (May 2026): Degenerative disc disease at L4-L5 with mild disc herniation
+- No spinal cord compression
+- Mild facet joint arthropathy
+
+CURRENT PAIN MANAGEMENT:
+- Acetaminophen 650mg 3-4 times daily (partially effective)
+- Physical therapy (2x per week)
+
+PHYSICIAN NOTES:
+67-year-old male with multiple comorbidities including AFib on anticoagulation therapy, presenting with chronic lower back pain from degenerative disc disease. Conservative management with acetaminophen has been only partially effective. Patient is requesting stronger pain relief to improve functional capacity and quality of life.
+
+Report Date: June 20, 2026
+Attending Physician: Dr. Robert Johnson, MD
+Specialty: Internal Medicine
