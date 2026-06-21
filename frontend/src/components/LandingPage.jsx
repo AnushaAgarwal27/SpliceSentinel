@@ -16,7 +16,7 @@ export default function LandingPage({ onGetStarted }) {
   }
 
   return (
-    <div className="bg-black w-full relative">
+    <div className="w-full relative" style={{ backgroundColor: '#0A0A0B' }}>
       <GoogleGeminiEffectDemo />
 
       {/* Get Started Button */}
@@ -28,9 +28,16 @@ export default function LandingPage({ onGetStarted }) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowUpload(true)}
-          className="inline-flex items-center gap-3 rounded-lg bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-2xl hover:bg-indigo-700 hover:shadow-3xl transition-all"
+          className="inline-flex items-center gap-2 rounded px-8 py-3 text-base font-medium text-white shadow-xl hover:shadow-2xl transition-all"
+          style={{
+            backgroundColor: '#0F4C45',
+            border: '1px solid rgba(201, 163, 92, 0.3)',
+            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          }}
+          onHover
         >
-          Get Started →
+          Get Started
+          <span className="ml-1 transition-transform">→</span>
         </motion.button>
       </div>
     </div>
