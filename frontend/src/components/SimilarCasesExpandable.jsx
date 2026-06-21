@@ -105,10 +105,10 @@ export default function SimilarCasesExpandable({
             <motion.div
               layoutId={`card-${active.safetyreportid}-${id}`}
               ref={ref}
-              className="w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-700 my-8"
+              className="w-full max-w-2xl bg-black rounded-2xl overflow-y-auto shadow-2xl border border-slate-700 my-4 max-h-[90vh]"
             >
               {/* Header */}
-              <div className="bg-black border-b border-slate-700 p-8 text-white">
+              <div className="bg-black border-b border-slate-700 p-4 text-white">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Similarity Match Score</p>
@@ -125,7 +125,7 @@ export default function SimilarCasesExpandable({
               </div>
 
               {/* Content */}
-              <div className="p-8 space-y-8">
+              <div className="p-4 space-y-4">
                 {/* Reaction Name */}
                 <div>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">Primary Adverse Reaction</p>
@@ -139,9 +139,9 @@ export default function SimilarCasesExpandable({
                 </div>
 
                 {/* Comparison - Current vs Similar */}
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-3">
                   {/* Current Patient */}
-                  <div className="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                  <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                     <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest mb-5">Patient Profile</h4>
                     <div className="space-y-4">
                       <div className="border-b border-slate-800 pb-4">
@@ -172,7 +172,7 @@ export default function SimilarCasesExpandable({
                   </div>
 
                   {/* Similar Case */}
-                  <div className="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                  <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                     <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest mb-5">Similar FDA Case Report</h4>
                     <div className="space-y-4">
                       <div className="border-b border-slate-800 pb-4">
@@ -208,7 +208,7 @@ export default function SimilarCasesExpandable({
                 </div>
 
                 {/* Match Breakdown with Methodology */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-6">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 space-y-3">
                   <div>
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-5">Similarity Score Breakdown</p>
                     <div className="space-y-3 text-sm">
@@ -263,37 +263,27 @@ export default function SimilarCasesExpandable({
                 </div>
 
                 {/* Report ID with Verification */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 space-y-3">
                   <div>
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">FDA FAERS Report Identifier</p>
-                    <code className="text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-3 rounded border border-slate-700 block">{active.safetyreportid}</code>
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">FDA Report ID</p>
+                    <code className="text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-2 rounded border border-slate-700 block">{active.safetyreportid}</code>
                   </div>
 
-                  <div className="border-t border-slate-700 pt-4">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Verification Links</p>
-                    <div className="space-y-2">
-                      <a
-                        href={`https://fis.fda.gov/sense/app/1d6c6f94-3d59-4e9e-b365-e282632b2fc9/sheet/7adf9e1e-b01e-4788-a128-41b674950735/state/analysis`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm transition"
-                      >
-                        Search FDA FAERS Dashboard →
-                      </a>
-                      <p className="text-xs text-slate-500">Search for Report ID: {active.safetyreportid}</p>
-                    </div>
+                  <div className="border-t border-slate-700 pt-2">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Verification</p>
+                    <p className="text-xs text-slate-300">Search this Report ID on FDA FAERS at: <span className="font-mono text-indigo-300">fda.gov/faers</span></p>
                   </div>
                 </div>
 
                 {/* Drug Combination Context */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-3">
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Drug Combination Analysis Context</p>
                   <p className="text-white font-semibold mb-2">{drug_a} + {drug_b}</p>
                   <p className="text-xs text-slate-400">Based on analysis of {combo_total?.toLocaleString()} documented adverse events from FDA FAERS database for this combination</p>
                 </div>
 
                 {/* Data Authenticity & Proof */}
-                <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 space-y-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 space-y-2">
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Why This Data is Real & Verifiable</p>
 
                   <div className="space-y-3 text-xs text-slate-300">
