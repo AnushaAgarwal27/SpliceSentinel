@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { motion } from 'framer-motion'
 import { ClipboardList, Pill, Lock, Zap, CheckCircle2, RotateCcw, ShieldCheck } from 'lucide-react'
@@ -31,7 +31,9 @@ const AnimatedBackground = () => {
   )
 }
 
-export default function FileUploadPage({ onExtractedData, onBack, loading: parentLoading, results: parentResults }) {
+let fileUploadMountCounter = 0
+
+export default function FileUploadPage({ onExtractedData, onBack }) {
   const [patientReport, setPatientReport] = useState(null)
   const [prescription, setPrescription] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -40,32 +42,28 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
   const [editMode, setEditMode] = useState(false)
   const [formData, setFormData] = useState({})
   const [dragActive, setDragActive] = useState(null)
+  const extractingRef = useRef(false)
+  const confirmingRef = useRef(false)
+  const instanceRef = useRef(null)
 
+  if (instanceRef.current === null) {
+    fileUploadMountCounter += 1
+    instanceRef.current = fileUploadMountCounter
+  }
 
   useEffect(() => {
-    // Reset form completely when coming back to upload another combination
-    if (parentResults === null && !parentLoading) {
-      setExtractedData(null)
-      setFormData({})
-      setPatientReport(null)
-      setPrescription(null)
-      setEditMode(false)
-      setError(null)
-      setLoading(false)
-      setDragActive(null)
-    }
-  }, [parentResults, parentLoading])
+    console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] mounted`)
+    return () => console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] unmounted`)
+  }, [])
 
-  // Extra safety: if we have extracted data but parent has results, clear local state
   useEffect(() => {
-    if (parentResults !== null && parentResults !== undefined) {
-      setExtractedData(null)
-      setFormData({})
-      setPatientReport(null)
-      setPrescription(null)
-      setEditMode(false)
-    }
-  }, [parentResults])
+    console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] view`, {
+      view: extractedData && editMode ? 'review' : 'upload',
+      loading,
+      hasPatientReport: Boolean(patientReport),
+      hasPrescription: Boolean(prescription),
+    })
+  }, [extractedData, editMode, loading, patientReport, prescription])
 
   const handleDrag = (e, type) => {
     e.preventDefault()
@@ -102,12 +100,22 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
   }
 
   const handleExtract = async () => {
+    if (extractingRef.current) {
+      console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] duplicate upload -> review request ignored`)
+      return
+    }
+
     if (!patientReport || !prescription) {
       setError('Please upload both files')
       return
     }
 
+    extractingRef.current = true
     setLoading(true)
+    console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] upload -> review requested`, {
+      patientReport: patientReport.name,
+      prescription: prescription.name,
+    })
 
     try {
       const formDataObj = new FormData()
@@ -121,11 +129,13 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
       setExtractedData(response.data)
       setFormData(response.data.extracted_data)
       setEditMode(true)
+      console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] upload -> review completed`)
     } catch (err) {
       console.error('Extraction error:', err)
       setError(err.response?.data?.detail || 'Failed to extract data from files')
     } finally {
       setLoading(false)
+      extractingRef.current = false
     }
   }
 
@@ -134,6 +144,13 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
   }
 
   const handleConfirm = () => {
+    if (confirmingRef.current) {
+      console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] duplicate review -> analysis request ignored`)
+      return
+    }
+
+    confirmingRef.current = true
+    console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] review -> analysis requested`)
     onExtractedData({
       ...formData,
       raw_patient_report: extractedData.patient_report_text,
@@ -303,6 +320,8 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
             <div className="grid grid-cols-2 gap-4 mt-8">
               <button
                 onClick={() => {
+                  console.log(`[FlowDebug][FileUploadPage:${instanceRef.current}] review -> upload requested`)
+                  confirmingRef.current = false
                   setExtractedData(null)
                   setFormData({})
                   setPatientReport(null)
@@ -316,6 +335,7 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
               </button>
               <button
                 onClick={handleConfirm}
+                disabled={confirmingRef.current}
                 className="px-6 py-3 bg-gradient-to-r from-[#2d5d55] to-[#3a7068] hover:shadow-lg hover:shadow-[#7FA88C]/30 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
               >
                 <ShieldCheck size={18} />

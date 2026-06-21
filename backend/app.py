@@ -27,6 +27,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from sentry_utils import capture_exception, init_sentry
+
+init_sentry()
+
 print("🔧 Initializing Phoenix Cloud with OpenTelemetry...", file=sys.stderr)
 try:
     from openinference.instrumentation.anthropic import AnthropicInstrumentor
@@ -180,6 +184,7 @@ async def debug_fda_raw(drug_a: str, drug_b: str):
             "note": "This is raw FDA FAERS data - real adverse event reports"
         }
     except Exception as e:
+        capture_exception(e, endpoint="/debug/fda-raw", drug_a=drug_a, drug_b=drug_b)
         raise HTTPException(status_code=502, detail=f"FDA API error: {str(e)}")
 
 
@@ -220,7 +225,18 @@ async def debug_similar_cases(drug_a: str, drug_b: str):
             "minimum_threshold": "20% similarity to qualify as a match"
         }
     except Exception as e:
+        capture_exception(e, endpoint="/debug/similar-cases", drug_a=drug_a, drug_b=drug_b)
         raise HTTPException(status_code=502, detail=f"Error retrieving similar cases: {str(e)}")
+
+
+@app.get("/debug/sentry-test")
+async def debug_sentry_test():
+    """Trigger a test error so the Sentry dashboard can be verified."""
+    try:
+        raise RuntimeError("Sentry test error from Splice Sentinel backend")
+    except Exception as e:
+        capture_exception(e, endpoint="/debug/sentry-test")
+        raise HTTPException(status_code=500, detail="Sentry test error captured")
 
 
 @app.post("/api/extract-patient-data")
@@ -276,6 +292,7 @@ async def extract_patient_data(
 
     except Exception as e:
         print(f"❌ Document extraction failed: {e}")
+        capture_exception(e, endpoint="/api/extract-patient-data")
         raise HTTPException(status_code=400, detail=f"Failed to process documents: {str(e)}")
 
 
@@ -346,8 +363,23 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
             print(f"    ✅ Found {combo_total} reports, {len(signals)} signals")
         except Exception as e:
             print(f"    ⚠️  Query failed for {current_med_clean}: {e}")
+            capture_exception(
+                e,
+                endpoint="/api/check-combination",
+                stage="openfda_query",
+                proposed_drug=proposed_drug,
+                current_med=current_med_clean,
+            )
 
     if not primary_data:
+        error = RuntimeError("openFDA queries failed")
+        capture_exception(
+            error,
+            endpoint="/api/check-combination",
+            stage="openfda_query",
+            proposed_drug=proposed_drug,
+            current_meds=current_meds[:3],
+        )
         raise HTTPException(status_code=502, detail="openFDA queries failed")
 
     # Use primary combo data for display
@@ -403,6 +435,13 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
         print(f"✅ Found {len(similar_cases)} similar cases (deduplicated)")
     except Exception as e:
         print(f"⚠️  Similarity scoring failed: {e}")
+        capture_exception(
+            e,
+            endpoint="/api/check-combination",
+            stage="similarity_scoring",
+            drug_a=drug_a,
+            drug_b=drug_b,
+        )
 
     # ========== PART 4: Claude narrative + note ==========
     narrative_summary = ""
@@ -426,6 +465,13 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
             print(f"✅ Generated clinical note")
         except Exception as e:
             print(f"⚠️  Claude generation failed: {e}")
+            capture_exception(
+                e,
+                endpoint="/api/check-combination",
+                stage="claude_generation",
+                drug_a=drug_a,
+                drug_b=drug_b,
+            )
             narrative_summary = f"Could not generate summary: {str(e)}"
             clinical_note = f"Could not generate note: {str(e)}"
 
@@ -456,6 +502,13 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
         print(f"📊 Stored query result for trend analysis")
     except Exception as e:
         print(f"⚠️  Failed to store query result: {e}")
+        capture_exception(
+            e,
+            endpoint="/api/check-combination",
+            stage="store_query_result",
+            drug_a=drug_a,
+            drug_b=drug_b,
+        )
 
     print(f"✅ Check complete!\n")
     return result
@@ -481,6 +534,7 @@ async def get_trending():
         }
     except Exception as e:
         print(f"Error fetching trending signals: {e}")
+        capture_exception(e, endpoint="/api/trending-signals")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -502,6 +556,7 @@ async def get_history(drug_a: str, drug_b: str, limit: int = 30):
         }
     except Exception as e:
         print(f"Error fetching history: {e}")
+        capture_exception(e, endpoint="/api/combo-history", drug_a=drug_a, drug_b=drug_b)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -524,6 +579,7 @@ async def check_new_signals(drug_a: str, drug_b: str, since: str):
         }
     except Exception as e:
         print(f"Error checking new signals: {e}")
+        capture_exception(e, endpoint="/api/new-signals", drug_a=drug_a, drug_b=drug_b)
         raise HTTPException(status_code=500, detail=str(e))
 
 

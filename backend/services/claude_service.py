@@ -13,6 +13,7 @@ Two functions:
 from anthropic import Anthropic
 from typing import List, Dict
 import os
+from sentry_utils import capture_exception
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
@@ -79,16 +80,27 @@ Be honest about data limitations. Do NOT invent details that aren't present in t
 
 Keep your response to 3-4 sentences maximum."""
 
-    message = client.messages.create(
-        model="claude-opus-4-7",
-        max_tokens=300,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+    try:
+        message = client.messages.create(
+            model="claude-opus-4-7",
+            max_tokens=300,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+    except Exception as e:
+        capture_exception(
+            e,
+            service="claude",
+            function="summarize_narrative_pattern",
+            drug_a=drug_a,
+            drug_b=drug_b,
+            top_reaction=top_reaction,
+        )
+        raise
 
     return message.content[0].text
 
@@ -164,15 +176,26 @@ Example: Drug interaction review conducted. Reviewed {drug_a} and {drug_b} combi
 
 Generate the note now:"""
 
-    message = client.messages.create(
-        model="claude-opus-4-7",
-        max_tokens=250,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+    try:
+        message = client.messages.create(
+            model="claude-opus-4-7",
+            max_tokens=250,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+    except Exception as e:
+        capture_exception(
+            e,
+            service="claude",
+            function="generate_clinical_note",
+            drug_a=drug_a,
+            drug_b=drug_b,
+            combo_total=combo_total,
+        )
+        raise
 
     return message.content[0].text

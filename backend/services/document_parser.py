@@ -10,6 +10,7 @@ import os
 from typing import Dict, Any
 from anthropic import Anthropic
 from dotenv import load_dotenv
+from sentry_utils import capture_exception
 
 # Load environment variables
 load_dotenv()
@@ -49,6 +50,12 @@ def extract_text_from_file(file_path: str) -> str:
                 return f"[PDF detected but PyPDF2 not installed]"
             except Exception as pdf_error:
                 print(f"⚠️  PDF parsing failed: {pdf_error}")
+                capture_exception(
+                    pdf_error,
+                    service="document_parser",
+                    function="extract_text_from_file",
+                    file_type="pdf",
+                )
                 return f"[PDF parsing failed: {str(pdf_error)}]"
 
         # If still here, file is unreadable
@@ -56,6 +63,11 @@ def extract_text_from_file(file_path: str) -> str:
 
     except Exception as e:
         print(f"❌ Fatal error reading file: {e}")
+        capture_exception(
+            e,
+            service="document_parser",
+            function="extract_text_from_file",
+        )
         return f"[Error reading file: {str(e)}]"
 
 
@@ -184,9 +196,21 @@ how confident you are in the extraction. Add notes about what was found/missing.
 
     except json.JSONDecodeError as e:
         print(f"⚠️  Claude JSON parse error: {e}")
+        capture_exception(
+            e,
+            service="document_parser",
+            function="parse_patient_data_with_claude",
+            failure_type="invalid_json",
+        )
         return get_mock_patient_data()
     except Exception as e:
         print(f"⚠️  Claude API error: {e}")
+        capture_exception(
+            e,
+            service="document_parser",
+            function="parse_patient_data_with_claude",
+            failure_type="claude_api",
+        )
         # Fall back to mock data if Claude fails
         return get_mock_patient_data()
 

@@ -14,6 +14,7 @@ API Docs: https://open.fda.gov/apis/drug/event/
 import httpx
 import os
 from typing import Dict, List
+from sentry_utils import capture_exception
 
 BASE_URL = "https://api.fda.gov/drug/event.json"
 OPENFDA_API_KEY = os.getenv("OPENFDA_API_KEY", "")
@@ -56,6 +57,14 @@ async def query_openfda(
             return response.json()
     except Exception as e:
         print(f"❌ openFDA query error for '{drug_name}': {e}")
+        capture_exception(
+            e,
+            service="openfda",
+            function="query_openfda",
+            drug_name=drug_name,
+            additional_filter=additional_filter,
+            limit=limit,
+        )
         return {"results": [], "error": str(e)}
 
 
@@ -143,6 +152,13 @@ async def fetch_report_by_id(report_id: str) -> Dict:
                     print(f"   No results. Total matching this query: {total}")
         except Exception as e:
             print(f"   Error: {e}")
+            capture_exception(
+                e,
+                service="openfda",
+                function="fetch_report_by_id",
+                report_id=report_id,
+                search_term=search_term,
+            )
             continue
 
     # If all searches fail, try the limit=100 approach to get broader results
@@ -167,6 +183,12 @@ async def fetch_report_by_id(report_id: str) -> Dict:
 
     except Exception as e:
         print(f"   Fallback error: {e}")
+        capture_exception(
+            e,
+            service="openfda",
+            function="fetch_report_by_id_fallback",
+            report_id=report_id,
+        )
 
     print(f"❌ FAILED to find report {report_id} after all attempts")
     return {}

@@ -21,18 +21,45 @@ export default function App() {
   const [error, setError] = useState(null)
   const [progress, setProgress] = useState({})
   const [showProof, setShowProof] = useState(false)
+  const [flowStep, setFlowStep] = useState('upload')
   const performingCheckRef = useRef(false)
+  const appInstanceRef = useRef(Math.random().toString(36).slice(2, 8))
+
+  useEffect(() => {
+    console.log(`[FlowDebug][App:${appInstanceRef.current}] mounted`)
+    return () => console.log(`[FlowDebug][App:${appInstanceRef.current}] unmounted`)
+  }, [])
+
+  useEffect(() => {
+    console.log(`[FlowDebug][App:${appInstanceRef.current}] render state`, {
+      showLanding,
+      flowStep,
+      loading,
+      hasResults: Boolean(results),
+      hasError: Boolean(error),
+    })
+  }, [showLanding, flowStep, loading, results, error])
 
   const handleExtractedData = async (data) => {
+    console.log(`[FlowDebug][App:${appInstanceRef.current}] review -> analysis requested`, {
+      source: 'FileUploadPage.onExtractedData',
+      performingCheck: performingCheckRef.current,
+    })
+    setFlowStep('analysis')
     await performDrugCheck(data)
   }
 
   const performDrugCheck = async (patientData) => {
     // Prevent double-execution from React.StrictMode in development
     if (performingCheckRef.current) {
+      console.log(`[FlowDebug][App:${appInstanceRef.current}] duplicate analysis request ignored`)
       return
     }
     performingCheckRef.current = true
+    console.log(`[FlowDebug][App:${appInstanceRef.current}] analysis started`, {
+      proposedDrug: patientData.proposed_drug,
+      currentMeds: patientData.patient_current_meds,
+    })
 
     setLoading(true)
     setError(null)
@@ -72,12 +99,16 @@ export default function App() {
       setResults(response.data)
       setPatientData(patientData)
       setProgress({ stage: 'complete' })
+      setFlowStep('results')
+      console.log(`[FlowDebug][App:${appInstanceRef.current}] analysis -> results completed`)
     } catch (err) {
       setError(
         err.response?.data?.detail ||
         'Failed to check combination. Make sure backend is running on port 8000.'
       )
       console.error(err)
+      setFlowStep('upload')
+      console.log(`[FlowDebug][App:${appInstanceRef.current}] analysis failed; returning to upload`)
     } finally {
       setLoading(false)
       performingCheckRef.current = false
@@ -88,15 +119,16 @@ export default function App() {
     return <LandingPage onGetStarted={() => setShowLanding(false)} />
   }
 
-  // If no results, show the upload form
-  if (!results && !loading) {
+  // If no analysis is active, show the upload/review wizard.
+  if (flowStep === 'upload') {
     return (
       <FileUploadPage
         key="upload-form"
         onExtractedData={handleExtractedData}
-        onBack={() => setShowLanding(true)}
-        loading={loading}
-        results={results}
+        onBack={() => {
+          console.log(`[FlowDebug][App:${appInstanceRef.current}] upload -> landing requested`)
+          setShowLanding(true)
+        }}
       />
     )
   }
@@ -148,6 +180,7 @@ export default function App() {
                 setShowLanding(true)
                 setResults(null)
                 setProgress({})
+                setFlowStep('upload')
               }}
               className="flex items-center gap-2 px-4 py-2 bg-text-warm-gray/20 hover:bg-text-warm-gray/30 text-text-off-white font-semibold text-sm rounded-lg transition-all border border-text-warm-gray/30 hover:border-text-warm-gray/50 whitespace-nowrap"
             >
@@ -274,6 +307,7 @@ export default function App() {
                   setProgress({})
                   setLoading(false)
                   setError(null)
+                  setFlowStep('upload')
                 }}
                 className="w-full py-3 bg-teal-deep hover:bg-teal-light text-white font-semibold rounded-lg transition"
               >
