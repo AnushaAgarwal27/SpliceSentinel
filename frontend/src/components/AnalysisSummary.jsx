@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import ReactionsNetworkGraph from './ReactionsNetworkGraph'
 
 export function AnalysisHeader({ results }) {
   if (!results) return null
@@ -57,57 +58,7 @@ export function SummaryStats({ results }) {
 }
 
 export function ReactionsTable({ results }) {
-  if (!results) return null
-
-  const signals = results.signals || []
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="rounded-2xl bg-card-dark backdrop-blur-sm border border-teal-deep/30 p-8"
-    >
-      <div className="mb-4">
-        <h3 className="text-2xl font-bold text-text-off-white">Most Frequent Adverse Reactions (Across All Cases)</h3>
-        <p className="text-xs text-text-warm-gray mt-1">Reactions ranked by frequency and statistical signal strength (PRR)</p>
-      </div>
-      <div className="overflow-x-auto overflow-y-auto max-h-96 border border-teal-deep/30 rounded-lg">
-        <table className="w-full text-xs text-text-off-white/80">
-          <thead className="border-b border-teal-deep/30 sticky top-0 bg-card-dark/80">
-            <tr className="text-left text-text-warm-gray">
-              <th className="pb-2 px-2 py-2">Reaction</th>
-              <th className="pb-2 px-2 text-right">Reports</th>
-              <th className="pb-2 px-2 text-right">% Total</th>
-              <th className="pb-2 px-2 text-right">PRR-A</th>
-              <th className="pb-2 px-2 text-right">PRR-B</th>
-              <th className="pb-2 px-2 text-right">Max PRR</th>
-              <th className="pb-2 px-2 text-right">Signal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {signals.slice(0, 50).map((sig, i) => {
-              const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
-              const isElevated = maxPRR >= 2
-              return (
-                <tr key={i} className={`border-b border-teal-deep/20 hover:bg-teal-deep/10 transition ${isElevated ? 'bg-teal-deep/20' : ''}`}>
-                  <td className="py-2 px-2">{i + 1}. {sig.reaction}</td>
-                  <td className="py-2 px-2 text-right font-semibold">{sig.combo_count}</td>
-                  <td className="py-2 px-2 text-right">{((sig.combo_count / results.combo_total) * 100).toFixed(2)}%</td>
-                  <td className="py-2 px-2 text-right">{sig.prr_vs_drug_a.toFixed(2)}</td>
-                  <td className="py-2 px-2 text-right">{sig.prr_vs_drug_b.toFixed(2)}</td>
-                  <td className={`py-2 px-2 text-right font-bold ${isElevated ? 'text-gold-muted' : 'text-text-warm-gray'}`}>
-                    {maxPRR.toFixed(2)}
-                  </td>
-                  <td className="py-2 px-2 text-right">{isElevated ? '🚨' : '-'}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </motion.div>
-  )
+  return <ReactionsNetworkGraph results={results} />
 }
 
 export default function AnalysisSummary({ results }) {
@@ -139,7 +90,7 @@ export default function AnalysisSummary({ results }) {
       <div className="space-y-8">
         <AnalysisHeader results={results} />
         <SummaryStats results={results} />
-        <ReactionsTable results={results} />
+        <ReactionsNetworkGraph results={results} />
       </div>
     )
   } catch (err) {

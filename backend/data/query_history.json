@@ -1597,6 +1597,82 @@
           "prr_vs_drug_b": 98.5
         }
       ]
+    },
+    {
+      "timestamp": "2026-06-21T13:58:53.720141",
+      "combo_total": 1628,
+      "signals": [
+        {
+          "reaction": "International normalised ratio increased",
+          "combo_count": 16,
+          "rate_in_combo": 0.98,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 218.89
+        },
+        {
+          "reaction": "Completed suicide",
+          "combo_count": 11,
+          "rate_in_combo": 0.68,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Suicide attempt",
+          "combo_count": 9,
+          "rate_in_combo": 0.55,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Miosis",
+          "combo_count": 7,
+          "rate_in_combo": 0.43,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Sedation",
+          "combo_count": 7,
+          "rate_in_combo": 0.43,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Tachycardia",
+          "combo_count": 7,
+          "rate_in_combo": 0.43,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Gastrointestinal sounds abnormal",
+          "combo_count": 7,
+          "rate_in_combo": 0.43,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Blood pressure increased",
+          "combo_count": 7,
+          "rate_in_combo": 0.43,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Overdose",
+          "combo_count": 6,
+          "rate_in_combo": 0.37,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 999.0
+        },
+        {
+          "reaction": "Death",
+          "combo_count": 6,
+          "rate_in_combo": 0.37,
+          "prr_vs_drug_a": 999.0,
+          "prr_vs_drug_b": 98.5
+        }
+      ]
     }
   ],
   "ROFECOXIB+LISINOPRIL": [

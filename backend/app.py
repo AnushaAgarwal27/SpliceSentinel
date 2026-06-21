@@ -27,52 +27,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from sentry_utils import capture_exception, init_sentry
+from sentry_utils import capture_exception, init_sentry, track_operation
 
 init_sentry()
-
-print("🔧 Initializing Phoenix Cloud with OpenTelemetry...", file=sys.stderr)
-try:
-    from openinference.instrumentation.anthropic import AnthropicInstrumentor
-    from opentelemetry import trace
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor
-    from opentelemetry.sdk.resources import Resource
-
-    endpoint = os.getenv("PHOENIX_COLLECTOR_ENDPOINT", "https://app.phoenix.arize.com")
-    api_key = os.getenv("PHOENIX_API_KEY")
-    project = os.getenv("PHOENIX_PROJECT", "drug-interaction-checker")
-
-    if endpoint and api_key:
-        print(f"✅ Phoenix Cloud: {endpoint}", file=sys.stderr)
-        print(f"✅ Project: {project}", file=sys.stderr)
-
-        # Create resource with project name
-        resource = Resource.create({"service.name": project})
-
-        # OTLP HTTP exporter (Phoenix Cloud uses HTTP, not gRPC)
-        otlp_exporter = OTLPSpanExporter(
-            endpoint=endpoint,
-            headers={"api_key": api_key},
-        )
-
-        # Create tracer provider with resource
-        tracer_provider = TracerProvider(resource=resource)
-        tracer_provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
-        trace.set_tracer_provider(tracer_provider)
-
-        # Auto-instrument
-        AnthropicInstrumentor().instrument()
-
-        print(f"✅ OpenTelemetry configured", file=sys.stderr)
-        print(f"✅ Traces will flow to Phoenix Cloud", file=sys.stderr)
-    else:
-        print("⚠️  PHOENIX_COLLECTOR_ENDPOINT or PHOENIX_API_KEY not set", file=sys.stderr)
-except Exception as e:
-    import traceback
-    print(f"⚠️  Phoenix setup error: {e}", file=sys.stderr)
-    traceback.print_exc(file=sys.stderr)
 
 # ============================================================================
 # Now import services (they will use instrumented Anthropic)
@@ -346,46 +303,47 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
     all_signals = []
     primary_data = None
 
-    for idx, current_med in enumerate(current_meds[:3], 1):  # Check top 3 meds to avoid too many queries
-        current_med_clean = current_med.strip().upper()
-        print(f"  ▪ Checking {proposed_drug} + {current_med_clean}...")
+    with track_operation("fda_query", drug_a=proposed_drug, patient_meds_count=len(current_meds)):
+        for idx, current_med in enumerate(current_meds[:3], 1):  # Check top 3 meds to avoid too many queries
+            current_med_clean = current_med.strip().upper()
+            print(f"  ▪ Checking {proposed_drug} + {current_med_clean}...")
 
-        try:
-            data = await check_drug_combination(proposed_drug, current_med_clean)
+            try:
+                data = await check_drug_combination(proposed_drug, current_med_clean)
 
-            # Store first combination as primary for display
-            if primary_data is None:
-                primary_data = data
+                # Store first combination as primary for display
+                if primary_data is None:
+                    primary_data = data
 
-            # Aggregate reports from all combinations
-            all_combo_reports.extend(data.get("combo_reports", []))
+                # Aggregate reports from all combinations
+                all_combo_reports.extend(data.get("combo_reports", []))
 
-            # Calculate signals for this combination
-            combo_reactions = data.get("combo_reactions", {})
-            combo_total = data.get("combo_total", 0)
-            drug_a_reactions = data.get("drug_a_reactions", {})
-            drug_a_total = data.get("drug_a_total", 0)
-            drug_b_reactions = data.get("drug_b_reactions", {})
-            drug_b_total = data.get("drug_b_total", 0)
+                # Calculate signals for this combination
+                combo_reactions = data.get("combo_reactions", {})
+                combo_total = data.get("combo_total", 0)
+                drug_a_reactions = data.get("drug_a_reactions", {})
+                drug_a_total = data.get("drug_a_total", 0)
+                drug_b_reactions = data.get("drug_b_reactions", {})
+                drug_b_total = data.get("drug_b_total", 0)
 
-            signals = find_elevated_signals(
-                combo_reactions, combo_total,
-                drug_a_reactions, drug_a_total,
-                drug_b_reactions, drug_b_total,
-                prr_threshold=PRR_THRESHOLD
-            )
-            all_signals.extend(signals)
+                signals = find_elevated_signals(
+                    combo_reactions, combo_total,
+                    drug_a_reactions, drug_a_total,
+                    drug_b_reactions, drug_b_total,
+                    prr_threshold=PRR_THRESHOLD
+                )
+                all_signals.extend(signals)
 
-            print(f"    ✅ Found {combo_total} reports, {len(signals)} signals")
-        except Exception as e:
-            print(f"    ⚠️  Query failed for {current_med_clean}: {e}")
-            capture_exception(
-                e,
-                endpoint="/api/check-combination",
-                stage="openfda_query",
-                proposed_drug=proposed_drug,
-                current_med=current_med_clean,
-            )
+                print(f"    ✅ Found {combo_total} reports, {len(signals)} signals")
+            except Exception as e:
+                print(f"    ⚠️  Query failed for {current_med_clean}: {e}")
+                capture_exception(
+                    e,
+                    endpoint="/api/check-combination",
+                    stage="openfda_query",
+                    proposed_drug=proposed_drug,
+                    current_med=current_med_clean,
+                )
 
     if not primary_data:
         error = RuntimeError("openFDA queries failed")
@@ -467,7 +425,7 @@ async def check_combination(request: DrugCombinationRequest) -> CheckResult:
         print(f"📋 PART 4: Generating Claude summaries...")
         try:
             narrative_summary = summarize_narrative_pattern(
-                drug_a, drug_b, combo_reports, signals[0]["reaction"]
+                drug_a, drug_b, combo_reports, signals[0]["reaction"], max_sample=5
             )
             print(f"✅ Generated narrative summary")
 

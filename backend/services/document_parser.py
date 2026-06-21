@@ -121,22 +121,22 @@ def parse_patient_data_with_claude(
     prompt = f"""
 You are a medical document parser. Extract structured patient information from the provided documents.
 
-PATIENT MEDICAL REPORT:
+PATIENT MEDICAL REPORTS:
 ---
-{patient_report_text[:3000]}
+{patient_report_text[:8000]}
 ---
 
 PROPOSED PRESCRIPTION:
 ---
-{prescription_text[:3000]}
+{prescription_text[:4000]}
 ---
 
 Extract ONLY the following fields from these documents. Be precise:
 
 1. patient_age: Integer (extract from report if available, null if not found)
 2. patient_sex: "Male", "Female", or "Other" (or null)
-3. patient_conditions: List of medical conditions the patient has
-4. patient_current_meds: DRUG NAMES ONLY - Extract JUST the medication name, strip doses/frequency
+3. patient_conditions: List of medical conditions the patient has across all patient reports
+4. patient_current_meds: DRUG NAMES ONLY - Extract JUST the medication name from all patient reports, strip doses/frequency
    Examples: "Warfarin 5mg daily" → "Warfarin" | "Metoprolol 50mg twice daily" → "Metoprolol"
 5. proposed_drug: DRUG NAME ONLY - The name of the NEW drug being prescribed (no dose)
 6. illness_indication: The medical reason/illness the proposed drug treats
