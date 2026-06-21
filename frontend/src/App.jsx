@@ -112,19 +112,19 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen" style={{ backgroundColor: '#0A0A0B' }}>
       {/* Header */}
-      <header className="bg-gradient-to-r from-indigo-900 to-blue-900 text-white py-12 px-4 border-b border-indigo-500/30">
+      <header className="text-white py-12 px-4 border-b" style={{ backgroundColor: 'rgba(15, 76, 69, 0.4)', borderColor: 'rgba(201, 163, 92, 0.2)' }}>
         <div className="max-w-6xl mx-auto flex justify-between items-start">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl font-bold mb-2">
-              🧬 Splice Sentinel
+            <h1 className="text-5xl font-light mb-2" style={{ fontFamily: 'ui-serif, Georgia, serif', letterSpacing: '-0.02em', color: '#F5F5F0' }}>
+              Splice Sentinel
             </h1>
-            <p className="text-lg opacity-90">
+            <p className="text-base opacity-80 text-slate-300" style={{ fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}>
               Real FDA adverse event data to flag dangerous drug combinations
             </p>
           </motion.div>
@@ -132,20 +132,27 @@ export default function App() {
             <button
               onClick={() => setShowProof(true)}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: 'white',
+                backgroundColor: 'rgba(201, 163, 92, 0.15)',
+                color: '#F5F5F0',
                 padding: '10px 16px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '4px',
+                border: '1px solid rgba(201, 163, 92, 0.3)',
                 cursor: 'pointer',
                 fontSize: '14px',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap'
+                fontWeight: '500',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'rgba(201, 163, 92, 0.25)'
+                e.target.style.borderColor = 'rgba(201, 163, 92, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'rgba(201, 163, 92, 0.15)'
+                e.target.style.borderColor = 'rgba(201, 163, 92, 0.3)'
+              }}
             >
-              ✅ Show Proof
+              Verify Data
             </button>
             <button
               onClick={() => {
@@ -154,20 +161,25 @@ export default function App() {
                 setProgress({})
               }}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                color: 'white',
+                backgroundColor: 'transparent',
+                color: '#C9A35C',
                 padding: '10px 16px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '4px',
+                border: '1px solid rgba(201, 163, 92, 0.3)',
                 cursor: 'pointer',
                 fontSize: '14px',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap'
+                fontWeight: '500',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s'
               }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'rgba(201, 163, 92, 0.1)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent'
+              }}
             >
-              ← Back to Home
+              ← Home
             </button>
           </div>
         </div>
