@@ -110,9 +110,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <header className="bg-gradient-to-r from-primary to-secondary text-white py-12 px-4 shadow-lg">
+      <header className="bg-gradient-to-r from-indigo-900 to-blue-900 text-white py-12 px-4 border-b border-indigo-500/30">
         <div className="max-w-6xl mx-auto flex justify-between items-start">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -180,7 +180,7 @@ export default function App() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-6 p-4 bg-danger/10 border border-danger text-danger rounded-lg"
+              className="mb-6 p-4 bg-red-900/20 border border-red-500/50 text-red-300 rounded-lg"
             >
               ❌ {error}
             </motion.div>
@@ -276,7 +276,7 @@ export default function App() {
                   setResults(null)
                   setProgress({})
                 }}
-                className="w-full py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-lg transition"
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
               >
                 ← Check Another Combination
               </motion.button>
@@ -286,7 +286,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-slate-300 py-8 px-4 mt-16">
+      <footer className="bg-black border-t border-indigo-500/30 text-slate-400 py-8 px-4 mt-16">
         <div className="max-w-6xl mx-auto text-center text-sm">
           <p>Data source: FDA FAERS via openFDA API • This tool does not provide medical advice</p>
           <p className="mt-2 text-xs opacity-70">For hackathon demo purposes</p>
