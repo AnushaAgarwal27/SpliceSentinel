@@ -1,7 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useOutsideClick } from '../hooks/use-outside-click'
-import VerificationTool from './VerificationTool'
 
 export const CloseIcon = () => {
   return (
@@ -39,7 +38,6 @@ export default function SimilarCasesExpandable({
   patient_current_meds = []
 }) {
   const [active, setActive] = useState(null)
-  const [showVerification, setShowVerification] = useState(false)
   const ref = useRef(null)
   const id = useId()
 
@@ -278,24 +276,27 @@ export default function SimilarCasesExpandable({
                     </button>
                   </div>
 
-                  <div className="border-t border-slate-700 pt-3 space-y-3">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Verification</p>
+                  <div className="border-t border-slate-700 pt-3 space-y-2">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Independent Verification</p>
                     <button
-                      onClick={() => setShowVerification(true)}
+                      onClick={() => {
+                        navigator.clipboard.writeText(active.safetyreportid)
+                      }}
                       className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition text-sm"
                     >
-                      Search Report in FDA Database
+                      Copy Report ID: {active.safetyreportid}
                     </button>
-                    <p className="text-xs text-slate-400">
-                      Or view raw data on{' '}
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      This Report ID exists in FDA FAERS database. Search it on{' '}
                       <a
-                        href={`https://api.fda.gov/drug/event.json?search=safetyreportid:${active.safetyreportid}`}
+                        href="https://fis.fda.gov/extensions/FIS/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-indigo-400 hover:text-indigo-300 underline font-semibold"
                       >
-                        OpenFDA API
+                        FDA FAERS portal
                       </a>
+                      {' '}to verify independently.
                     </p>
                   </div>
                 </div>
@@ -395,8 +396,6 @@ export default function SimilarCasesExpandable({
           )
         })}
       </div>
-
-      <VerificationTool isOpen={showVerification} onClose={() => setShowVerification(false)} />
     </motion.div>
   )
 }
