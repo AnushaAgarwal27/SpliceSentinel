@@ -276,29 +276,19 @@ export default function SimilarCasesExpandable({
                     </button>
                   </div>
 
-                  <div className="border-t border-slate-700 pt-3 space-y-3">
+                  <div className="border-t border-slate-700 pt-3 space-y-2">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Independent Verification</p>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(active.safetyreportid)
-                      }}
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition text-sm"
+                    <a
+                      href={`https://api.fda.gov/drug/event.json?search=safetyreportid:${active.safetyreportid}&limit=1`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition text-sm text-center"
                     >
-                      Copy Report ID: {active.safetyreportid}
-                    </button>
-                    <div className="space-y-2">
-                      <a
-                        href={`https://api.fda.gov/drug/event.json?search=safetyreportid:${active.safetyreportid}&limit=1`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full bg-slate-700 hover:bg-slate-600 text-indigo-300 hover:text-indigo-200 py-2 rounded text-center text-xs font-semibold transition"
-                      >
-                        View Report JSON (OpenFDA API)
-                      </a>
-                      <p className="text-xs text-slate-400 leading-relaxed">
-                        Report ID is searchable in FDA FAERS database. Click above to view official JSON data from OpenFDA.
-                      </p>
-                    </div>
+                      View Report JSON (OpenFDA API)
+                    </a>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Click to view official FDA data for this Report ID in JSON format.
+                    </p>
                   </div>
                 </div>
 
