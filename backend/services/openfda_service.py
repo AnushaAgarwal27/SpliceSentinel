@@ -97,11 +97,12 @@ async def fetch_report_by_id(report_id: str) -> Dict:
     Returns:
         Report details if found, empty dict otherwise
     """
+    print(f"\n🔍 Searching for report ID: {report_id}")
+
     # Try multiple search formats
     search_formats = [
         f'safetyreportid:"{report_id}"',  # Exact format
         f'safetyreportid:{report_id}',     # Without quotes
-        f'safetyreportid:"{report_id}"',   # With quotes
     ]
 
     if OPENFDA_API_KEY:
@@ -119,6 +120,7 @@ async def fetch_report_by_id(report_id: str) -> Dict:
             params["api_key"] = api_key
 
         try:
+            print(f"  Trying: {search_term}")
             async with httpx.AsyncClient(timeout=10) as client:
                 response = await client.get(BASE_URL, params=params)
                 response.raise_for_status()
@@ -126,13 +128,20 @@ async def fetch_report_by_id(report_id: str) -> Dict:
                 results = data.get("results", [])
 
                 if results:
-                    print(f"✅ Found report {report_id} with search: {search_term}")
-                    return results[0]
+                    found_report = results[0]
+                    found_id = found_report.get("safetyreportid", "MISSING")
+                    print(f"✅ FOUND! Report ID in response: {found_id}")
+                    print(f"   Full report keys: {list(found_report.keys())[:5]}")
+                    return found_report
+                else:
+                    meta = data.get("meta", {})
+                    total = meta.get("results", {}).get("total", 0)
+                    print(f"   No results. Total in DB for this search: {total}")
         except Exception as e:
-            print(f"⚠️  Search format '{search_term}' failed: {e}")
+            print(f"   Error: {e}")
             continue
 
-    print(f"❌ Report ID '{report_id}' not found in FDA database after trying all formats")
+    print(f"❌ FAILED to find report {report_id} after all attempts")
     return {}
 
 

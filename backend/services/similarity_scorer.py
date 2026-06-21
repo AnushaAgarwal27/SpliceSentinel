@@ -268,6 +268,11 @@ def extract_case_info(faers_report: Dict) -> Dict:
     # Report ID
     report_id = faers_report.get("safetyreportid", "Unknown")
 
+    # Debug: log what keys are in the report
+    if report_id == "Unknown":
+        available_keys = list(faers_report.keys())[:10]
+        logger.warning(f"No safetyreportid found. Available keys: {available_keys}")
+
     return {
         "age": age,
         "sex": sex,
