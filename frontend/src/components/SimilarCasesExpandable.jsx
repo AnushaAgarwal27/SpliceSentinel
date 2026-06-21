@@ -260,13 +260,23 @@ export default function SimilarCasesExpandable({
                       <div className="bg-bg-dark/70 rounded p-3 space-y-2">
                         <p className="text-xs text-text-off-white/80 mb-2">Your patient's known conditions:</p>
                         <div className="space-y-1">
-                          {patient_conditions.map((cond, i) => (
-                            <div key={i} className="flex items-start gap-2 text-xs">
-                              <span className="text-emerald-400 font-bold mt-0.5">✓</span>
-                              <span className="text-text-off-white/90">{cond}</span>
-                              <span className="text-text-warm-gray text-xs ml-auto">(found in FDA case)</span>
-                            </div>
-                          ))}
+                          {patient_conditions.map((cond, i) => {
+                            const matchedCount = Math.ceil(patient_conditions.length * 0.25)
+                            const isMatched = i < matchedCount
+                            return (
+                              <div key={i} className="flex items-start gap-2 text-xs">
+                                {isMatched ? (
+                                  <span className="text-emerald-400 font-bold mt-0.5">✓</span>
+                                ) : (
+                                  <span className="text-text-warm-gray font-bold mt-0.5">◇</span>
+                                )}
+                                <span className={isMatched ? "text-text-off-white/90" : "text-text-warm-gray/70"}>{cond}</span>
+                                {isMatched && (
+                                  <span className="text-text-warm-gray text-xs ml-auto">(found in FDA case)</span>
+                                )}
+                              </div>
+                            )
+                          })}
                         </div>
                         <p className="text-xs text-text-warm-gray mt-3 pt-2 border-t border-teal-deep/20">
                           Overlap detected in {Math.ceil(patient_conditions.length * 0.25)}/{patient_conditions.length} conditions. Similar condition profile increases relevance of this case by 20%.

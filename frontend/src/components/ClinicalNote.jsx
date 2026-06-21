@@ -20,7 +20,7 @@ export default function ClinicalNote({ note }) {
       className="bg-card-dark rounded-2xl border border-teal-deep/30 p-8"
     >
       <h3 className="text-2xl font-bold text-text-off-white mb-4">
-        ✍️ Generated Clinical Note
+        Generated Clinical Note
       </h3>
 
       <p className="text-sm text-text-warm-gray mb-4">

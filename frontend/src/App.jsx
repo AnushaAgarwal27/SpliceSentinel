@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
-import { Dna, Eye, Home } from 'lucide-react'
+import { Dna, Home } from 'lucide-react'
 import './App.css'
 
 import LandingPage from './components/LandingPage.jsx'
 import FileUploadPage from './components/FileUploadPage'
 import QueryProgress from './components/QueryProgress'
-import AnalysisSummary, { AnalysisHeader, SummaryStats, ReactionsTable } from './components/AnalysisSummary'
+import AnalysisSummary, { AnalysisHeader, SummaryStats } from './components/AnalysisSummary'
+import ReactionsNetworkGraph from './components/ReactionsNetworkGraph'
 import SimilarCasesExpandable from './components/SimilarCasesExpandable'
 import NarrativeSummary from './components/NarrativeSummary'
 import ClinicalNote from './components/ClinicalNote'
-import ProofPage from './components/ProofPage'
 
 export default function App() {
   const [showLanding, setShowLanding] = useState(true)
@@ -20,7 +20,6 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [progress, setProgress] = useState({})
-  const [showProof, setShowProof] = useState(false)
   const [flowStep, setFlowStep] = useState('upload')
   const performingCheckRef = useRef(false)
   const appInstanceRef = useRef(Math.random().toString(36).slice(2, 8))
@@ -167,15 +166,6 @@ export default function App() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setShowProof(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-deep/30 hover:bg-teal-deep/40 text-text-off-white font-semibold text-sm rounded-lg transition-all border border-teal-deep/50 hover:border-teal-deep/70 whitespace-nowrap"
-            >
-              <Eye size={18} strokeWidth={2} />
-              Show Proof
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setShowLanding(true)
                 setResults(null)
@@ -234,7 +224,10 @@ export default function App() {
               {/* 2. Summary Statistics */}
               <SummaryStats results={results} />
 
-              {/* 3. Similar Cases - Expandable Cards */}
+              {/* 3. Reaction Network Graph */}
+              <ReactionsNetworkGraph results={results} />
+
+              {/* 4. Similar Cases - Expandable Cards */}
               {results.similar_cases && results.similar_cases.length > 0 && (
                 <SimilarCasesExpandable
                   cases={results.similar_cases}
@@ -249,50 +242,12 @@ export default function App() {
                 />
               )}
 
-              {/* 4. All Reactions Table */}
-              <ReactionsTable results={results} />
-
-              {/* 3. High Risk Signals (PRR ≥ 2.0) */}
-              {results.signals && (() => {
-                const elevatedSignals = results.signals.filter(s => Math.max(s.prr_vs_drug_a, s.prr_vs_drug_b) >= 2)
-                return elevatedSignals.length > 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                    className="rounded-2xl bg-card-dark border border-teal-deep/30 p-8"
-                  >
-                    <div className="flex gap-4">
-                      <div className="text-4xl">⚠️</div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-gold-muted mb-4">
-                          {elevatedSignals.length} High Risk Signal{elevatedSignals.length !== 1 ? 's' : ''} (PRR ≥ 2.0)
-                        </h3>
-                        <div className="space-y-2 max-h-80 overflow-y-auto">
-                          {elevatedSignals.map((sig, i) => {
-                            const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
-                            return (
-                              <div key={i} className="bg-teal-deep/20 border border-teal-deep/50 rounded p-3 text-sm hover:border-teal-deep transition">
-                                <div className="font-bold text-text-off-white">{sig.reaction}</div>
-                                <div className="text-xs text-text-warm-gray mt-1">
-                                  {sig.combo_count} reports • {((sig.combo_count / results.combo_total) * 100).toFixed(2)}% • PRR: {maxPRR.toFixed(2)}× (A: {sig.prr_vs_drug_a.toFixed(2)}, B: {sig.prr_vs_drug_b.toFixed(2)})
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ) : null
-              })()}
-
-              {/* 4. Narrative Summary */}
+              {/* 5. Narrative Summary */}
               {results.narrative_summary && (
                 <NarrativeSummary summary={results.narrative_summary} />
               )}
 
-              {/* 5. Clinical Note */}
+              {/* 6. Clinical Note */}
               {results.clinical_note && (
                 <ClinicalNote note={results.clinical_note} />
               )}
@@ -326,17 +281,6 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Proof Modal */}
-      {showProof && results && (
-        <ProofPage
-          onClose={() => setShowProof(false)}
-          drug_a={results.drug_a}
-          drug_b={results.drug_b}
-        />
-      )}
-      {showProof && !results && (
-        <ProofPage onClose={() => setShowProof(false)} />
-      )}
     </div>
   )
 }

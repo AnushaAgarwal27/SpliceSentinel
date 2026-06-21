@@ -70,15 +70,15 @@ The statistical analysis flagged "{top_reaction}" as occurring more often in thi
 Here are {len(report_summaries)} sample real patient cases:
 {report_text}
 
-Please summarize in plain language (suitable for a doctor to understand):
-1. What pattern do you see across these cases?
-2. When did the reaction typically start (if timing is mentioned)?
-3. How severe does the reaction appear to be?
-4. Does this look like a consistent pattern or scattered cases?
+Summarize in a numbered list format ONLY (1), 2), 3)):
 
-Be honest about data limitations. Do NOT invent details that aren't present in the sample.
+1) Pattern observed - what adverse events were reported?
+2) Timing - when did reactions occur (if data available)?
+3) Assessment - is this a strong signal or scattered cases?
 
-Keep your response to 3-4 sentences maximum."""
+Be honest about data limitations. Do NOT invent details.
+Keep each point to ONE short sentence only.
+NO narrative paragraphs - only numbered points."""
 
     try:
         message = client.messages.create(
@@ -149,7 +149,7 @@ def generate_clinical_note(
     prr_vs_a = top_signals[0]["prr_vs_drug_a"] if top_signals else "N/A"
     prr_vs_b = top_signals[0]["prr_vs_drug_b"] if top_signals else "N/A"
 
-    prompt = f"""Generate a brief clinical documentation note for a doctor's patient chart.
+    prompt = f"""Generate a brief clinical documentation note for a doctor's patient chart using a simple numbered list format.
 
 This note documents a drug interaction review that was conducted.
 
@@ -162,17 +162,21 @@ Information:
 - Patient{patient_context}
 - Patient pattern summary: {narrative_summary}
 
-Write a professional, factual note (2-3 sentences) suitable for inclusion in a medical record.
+Write a professional, factual note suitable for inclusion in a medical record.
 
-Format:
-- Start with "Drug interaction check conducted [drugs reviewed]"
-- Include the FAERS findings (report count, flagged reaction, PRR values)
-- Note the data source (FDA FAERS)
-- End with "Clinical judgment and patient assessment required"
-- Do NOT recommend stopping the drugs - only document what was reviewed
-- Keep it factual, not interpretive
+Format as a numbered list (1. 2. 3.) with short, simple statements:
+1. What was reviewed (drugs and database)
+2. What was found (report count, reaction, PRR signal)
+3. What this means (clinical judgment required, not a recommendation)
 
-Example: Drug interaction review conducted. Reviewed {drug_a} and {drug_b} combination against FDA FAERS database. Found {combo_total} co-reports with elevated signal for {top_reaction}. Data source: FDA FAERS via openFDA API. Clinical judgment required for treatment decisions.
+Do NOT use bold formatting or complex medical language.
+Keep each point to one simple sentence.
+Do NOT recommend stopping the drugs - only document what was reviewed.
+
+Example:
+1. Drug interaction review conducted for {drug_a} and {drug_b} combination against FDA FAERS database.
+2. Found {combo_total} reports with elevated signal for {top_reaction} (PRR signal confirmed).
+3. Data source is FDA FAERS. Clinical judgment and patient assessment required for treatment decisions.
 
 Generate the note now:"""
 
