@@ -6,7 +6,7 @@ import './App.css'
 import LandingPage from './components/LandingPage.jsx'
 import FileUploadPage from './components/FileUploadPage'
 import QueryProgress from './components/QueryProgress'
-import AnalysisSummary from './components/AnalysisSummary'
+import AnalysisSummary, { AnalysisHeader, SummaryStats, ReactionsTable } from './components/AnalysisSummary'
 import SimilarCasesExpandable from './components/SimilarCasesExpandable'
 import NarrativeSummary from './components/NarrativeSummary'
 import ClinicalNote from './components/ClinicalNote'
@@ -120,7 +120,7 @@ export default function App() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl font-bold mb-2">
-              🔬 Drug Interaction Checker
+              🧬 Splice Sentinel
             </h1>
             <p className="text-lg opacity-90">
               Real FDA adverse event data to flag dangerous drug combinations
@@ -208,10 +208,13 @@ export default function App() {
               transition={{ duration: 0.4 }}
               className="space-y-6"
             >
-              {/* 1. Analysis Summary - Reactions Table */}
-              <AnalysisSummary results={results} />
+              {/* 1. Analysis Header */}
+              <AnalysisHeader results={results} />
 
-              {/* 2. Similar Cases - Expandable Cards */}
+              {/* 2. Summary Statistics */}
+              <SummaryStats results={results} />
+
+              {/* 3. Similar Cases - Expandable Cards */}
               {results.similar_cases && results.similar_cases.length > 0 && (
                 <SimilarCasesExpandable
                   cases={results.similar_cases}
@@ -221,6 +224,9 @@ export default function App() {
                   drug_b={results.drug_b}
                 />
               )}
+
+              {/* 4. All Reactions Table */}
+              <ReactionsTable results={results} />
 
               {/* 3. High Risk Signals (PRR ≥ 2.0) */}
               {results.signals && (() => {
