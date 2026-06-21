@@ -241,7 +241,7 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
               </button>
               <button
                 onClick={handleConfirm}
-                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
+                className="px-6 py-3 py-2 rounded-lg font-semibold transition text-sm text-center" style={{ backgroundColor: '#0F4C45', border: '1px solid rgba(201, 163, 92, 0.3)' }} text-white font-semibold rounded-lg transition-colors"
               >
                 ✓ Check Drug Interactions
               </button>
@@ -313,7 +313,7 @@ export default function FileUploadPage({ onExtractedData, onBack, loading: paren
           className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all ${
             loading || !patientReport || !prescription
               ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl'
+              : 'py-2 rounded-lg font-semibold transition text-sm text-center" style={{ backgroundColor: '#0F4C45', border: '1px solid rgba(201, 163, 92, 0.3)' }} text-white shadow-lg hover:shadow-xl'
           }`}
         >
           {loading ? (

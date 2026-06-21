@@ -41,7 +41,7 @@ export default function ProofPage({ onClose, drug_a, drug_b }) {
           <p className="text-slate-300 mb-6">Complete a drug combination check first to view detailed FDA data analysis.</p>
           <button
             onClick={onClose}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition"
+            className="w-full py-2 rounded-lg font-semibold transition text-sm text-center" style={{ backgroundColor: '#0F4C45', border: '1px solid rgba(201, 163, 92, 0.3)' }} text-white font-semibold py-2 rounded-lg transition"
           >
             Close
           </button>

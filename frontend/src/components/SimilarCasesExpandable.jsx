@@ -273,7 +273,10 @@ export default function SimilarCasesExpandable({
                       onClick={() => {
                         navigator.clipboard.writeText(active.safetyreportid)
                       }}
-                      className="w-full text-sm font-mono text-indigo-300 break-all bg-slate-800/50 p-2 rounded border border-slate-700 block hover:border-indigo-500 hover:bg-slate-800 transition cursor-pointer text-left"
+                      className="w-full text-sm font-mono text-amber-100 break-all bg-slate-800/50 p-2 rounded border border-slate-700 block transition cursor-pointer text-left"
+                      style={{ borderColor: 'rgba(201, 163, 92, 0.2)' }}
+                      onMouseEnter={(e) => e.target.style.borderColor = 'rgba(201, 163, 92, 0.5)'}
+                      onMouseLeave={(e) => e.target.style.borderColor = 'rgba(201, 163, 92, 0.2)'}
                     >
                       {active.safetyreportid} (click to copy)
                     </button>
@@ -285,7 +288,8 @@ export default function SimilarCasesExpandable({
                       href={`https://api.fda.gov/drug/event.json?search=safetyreportid:${active.safetyreportid}&limit=1`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition text-sm text-center"
+                      className="block w-full text-white py-2 rounded font-semibold transition text-sm text-center"
+                      style={{ backgroundColor: '#0F4C45', border: '1px solid rgba(201, 163, 92, 0.3)' }}
                     >
                       View Report JSON (OpenFDA API)
                     </a>
