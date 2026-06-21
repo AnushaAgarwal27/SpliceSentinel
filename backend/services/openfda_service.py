@@ -87,6 +87,37 @@ def extract_reaction_counts(api_response: Dict) -> Dict[str, int]:
     return reaction_counts
 
 
+async def fetch_report_by_id(report_id: str) -> Dict:
+    """
+    Fetch a specific FAERS report by safetyreportid.
+
+    Args:
+        report_id: FDA safetyreportid (e.g., "10285688")
+
+    Returns:
+        Report details if found, empty dict otherwise
+    """
+    search_term = f'safetyreportid:"{report_id}"'
+    params = {
+        "search": search_term,
+        "limit": 1
+    }
+
+    if OPENFDA_API_KEY:
+        params["api_key"] = OPENFDA_API_KEY
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            response = await client.get(BASE_URL, params=params)
+            response.raise_for_status()
+            data = response.json()
+            results = data.get("results", [])
+            return results[0] if results else {}
+    except Exception as e:
+        print(f"❌ openFDA report fetch error for ID '{report_id}': {e}")
+        return {}
+
+
 async def check_drug_combination(
     drug_a: str,
     drug_b: str

@@ -527,6 +527,64 @@ async def check_new_signals(drug_a: str, drug_b: str, since: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/verify-report/{report_id}")
+async def verify_report(report_id: str):
+    """
+    Fetch and display a specific FAERS report by safetyreportid.
+
+    Returns formatted report details for user verification.
+    """
+    try:
+        from services.openfda_service import fetch_report_by_id
+
+        report = await fetch_report_by_id(report_id)
+
+        if not report:
+            raise HTTPException(status_code=404, detail=f"Report ID {report_id} not found")
+
+        # Extract key details for display
+        safetyreportid = report.get("safetyreportid", report_id)
+        receivedate = report.get("receivedate", "Unknown")
+
+        # Patient info
+        patient = report.get("patient", {})
+        patient_age = patient.get("patientonsetage", "Unknown")
+        patient_sex = patient.get("patientsex", "Unknown")
+
+        # Reactions
+        reactions = patient.get("reaction", [])
+        if isinstance(reactions, dict):
+            reactions = [reactions]
+        reaction_list = [r.get("reactionmeddrapt", "Unknown") for r in reactions]
+
+        # Drugs
+        drugs = patient.get("drug", [])
+        if isinstance(drugs, dict):
+            drugs = [drugs]
+        drug_list = [d.get("medicinalproduct", "Unknown") for d in drugs]
+
+        # Case info
+        cases = report.get("case", {})
+        case_type = cases.get("casetype", "Unknown")
+
+        return {
+            "status": "success",
+            "report_id": safetyreportid,
+            "receive_date": receivedate,
+            "patient_age": patient_age,
+            "patient_sex": patient_sex,
+            "reactions": reaction_list,
+            "drugs": drug_list,
+            "case_type": case_type,
+            "raw_report": report
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error verifying report: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Active WebSocket connections for broadcasting
 class ConnectionManager:
     def __init__(self):
