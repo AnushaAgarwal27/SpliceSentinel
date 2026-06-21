@@ -73,7 +73,7 @@ export default function AnalysisSummary({ results }) {
         </div>
       </motion.div>
 
-      {/* All Reactions Table */}
+      {/* All Reactions Table - Scrollable */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -81,11 +81,11 @@ export default function AnalysisSummary({ results }) {
         className="rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-sm border border-slate-600/50 p-8"
       >
         <h3 className="text-2xl font-bold text-white mb-4">All Reactions (Top 50)</h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto max-h-96 border border-slate-700 rounded-lg">
           <table className="w-full text-xs text-slate-300">
-            <thead className="border-b border-slate-600">
+            <thead className="border-b border-slate-600 sticky top-0 bg-slate-900">
               <tr className="text-left text-slate-200">
-                <th className="pb-2 px-2">Reaction</th>
+                <th className="pb-2 px-2 py-2">Reaction</th>
                 <th className="pb-2 px-2 text-right">Reports</th>
                 <th className="pb-2 px-2 text-right">% Total</th>
                 <th className="pb-2 px-2 text-right">PRR-A</th>
@@ -99,16 +99,16 @@ export default function AnalysisSummary({ results }) {
                 const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
                 const isElevated = maxPRR >= 2
                 return (
-                  <tr key={i} className={`border-b border-slate-700 ${isElevated ? 'bg-red-900/10' : ''}`}>
-                    <td className="py-1 px-2">{i + 1}. {sig.reaction}</td>
-                    <td className="py-1 px-2 text-right font-semibold">{sig.combo_count}</td>
-                    <td className="py-1 px-2 text-right">{((sig.combo_count / results.combo_total) * 100).toFixed(2)}%</td>
-                    <td className="py-1 px-2 text-right">{sig.prr_vs_drug_a.toFixed(2)}</td>
-                    <td className="py-1 px-2 text-right">{sig.prr_vs_drug_b.toFixed(2)}</td>
-                    <td className="py-1 px-2 text-right font-bold" style={{ color: isElevated ? '#ef4444' : '#94a3b8' }}>
+                  <tr key={i} className={`border-b border-slate-700 hover:bg-slate-700/20 transition ${isElevated ? 'bg-red-900/10' : ''}`}>
+                    <td className="py-2 px-2">{i + 1}. {sig.reaction}</td>
+                    <td className="py-2 px-2 text-right font-semibold">{sig.combo_count}</td>
+                    <td className="py-2 px-2 text-right">{((sig.combo_count / results.combo_total) * 100).toFixed(2)}%</td>
+                    <td className="py-2 px-2 text-right">{sig.prr_vs_drug_a.toFixed(2)}</td>
+                    <td className="py-2 px-2 text-right">{sig.prr_vs_drug_b.toFixed(2)}</td>
+                    <td className="py-2 px-2 text-right font-bold" style={{ color: isElevated ? '#ef4444' : '#94a3b8' }}>
                       {maxPRR.toFixed(2)}
                     </td>
-                    <td className="py-1 px-2 text-right">{isElevated ? '🚨' : '-'}</td>
+                    <td className="py-2 px-2 text-right">{isElevated ? '🚨' : '-'}</td>
                   </tr>
                 )
               })}
@@ -117,37 +117,6 @@ export default function AnalysisSummary({ results }) {
         </div>
       </motion.div>
 
-      {/* High Risk Alert */}
-      {elevatedSignals.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="rounded-2xl bg-red-900/20 border border-red-500/50 p-8"
-        >
-          <div className="flex gap-4">
-            <div className="text-4xl">🚨</div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-red-300 mb-3">
-                {elevatedSignals.length} High Risk Signal{elevatedSignals.length !== 1 ? 's' : ''} (PRR ≥ 2.0)
-              </h3>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {elevatedSignals.map((sig, i) => {
-                  const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
-                  return (
-                    <div key={i} className="bg-red-900/30 border border-red-700 rounded p-2 text-sm">
-                      <div className="font-bold text-red-200">{sig.reaction}</div>
-                      <div className="text-xs text-red-300">
-                        {sig.combo_count} reports • {((sig.combo_count / results.combo_total) * 100).toFixed(2)}% • PRR: {maxPRR.toFixed(2)}× (A: {sig.prr_vs_drug_a.toFixed(2)}, B: {sig.prr_vs_drug_b.toFixed(2)})
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
     </div>
     )
   } catch (err) {

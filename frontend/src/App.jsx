@@ -7,7 +7,7 @@ import LandingPage from './components/LandingPage.jsx'
 import FileUploadPage from './components/FileUploadPage'
 import QueryProgress from './components/QueryProgress'
 import AnalysisSummary from './components/AnalysisSummary'
-import SimilarCases from './components/SimilarCases'
+import SimilarCasesExpandable from './components/SimilarCasesExpandable'
 import NarrativeSummary from './components/NarrativeSummary'
 import ClinicalNote from './components/ClinicalNote'
 import ProofPage from './components/ProofPage'
@@ -208,12 +208,12 @@ export default function App() {
               transition={{ duration: 0.4 }}
               className="space-y-6"
             >
-              {/* Analysis Summary - Main Results Display */}
+              {/* 1. Analysis Summary - Reactions Table */}
               <AnalysisSummary results={results} />
 
-              {/* Similar Cases */}
+              {/* 2. Similar Cases - Expandable Cards */}
               {results.similar_cases && results.similar_cases.length > 0 && (
-                <SimilarCases
+                <SimilarCasesExpandable
                   cases={results.similar_cases}
                   signals={results.signals}
                   combo_total={results.combo_total}
@@ -222,12 +222,47 @@ export default function App() {
                 />
               )}
 
-              {/* Narrative Summary */}
+              {/* 3. High Risk Signals (PRR ≥ 2.0) */}
+              {results.signals && (() => {
+                const elevatedSignals = results.signals.filter(s => Math.max(s.prr_vs_drug_a, s.prr_vs_drug_b) >= 2)
+                return elevatedSignals.length > 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    className="rounded-2xl bg-red-900/20 border border-red-500/50 p-8"
+                  >
+                    <div className="flex gap-4">
+                      <div className="text-4xl">🚨</div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-red-300 mb-4">
+                          {elevatedSignals.length} High Risk Signal{elevatedSignals.length !== 1 ? 's' : ''} (PRR ≥ 2.0)
+                        </h3>
+                        <div className="space-y-2 max-h-80 overflow-y-auto">
+                          {elevatedSignals.map((sig, i) => {
+                            const maxPRR = Math.max(sig.prr_vs_drug_a, sig.prr_vs_drug_b)
+                            return (
+                              <div key={i} className="bg-red-900/30 border border-red-700 rounded p-3 text-sm">
+                                <div className="font-bold text-red-200">{sig.reaction}</div>
+                                <div className="text-xs text-red-300 mt-1">
+                                  {sig.combo_count} reports • {((sig.combo_count / results.combo_total) * 100).toFixed(2)}% • PRR: {maxPRR.toFixed(2)}× (A: {sig.prr_vs_drug_a.toFixed(2)}, B: {sig.prr_vs_drug_b.toFixed(2)})
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : null
+              })()}
+
+              {/* 4. Narrative Summary */}
               {results.narrative_summary && (
                 <NarrativeSummary summary={results.narrative_summary} />
               )}
 
-              {/* Clinical Note */}
+              {/* 5. Clinical Note */}
               {results.clinical_note && (
                 <ClinicalNote note={results.clinical_note} />
               )}
